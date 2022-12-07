@@ -1,5 +1,8 @@
+#Compiled code
+code/code
+
 #CMake files
-*/build/
+code/build/
 
 #Ignore compiled files, temporary files and build results
 # Prerequisites
