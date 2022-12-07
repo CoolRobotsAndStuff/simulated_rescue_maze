@@ -1,3 +1,9 @@
+#Compiled code
+code/code
+
+#CMake files
+code/build/
+
 #Ignore compiled files, temporary files and build results
 # Prerequisites
 *.d
