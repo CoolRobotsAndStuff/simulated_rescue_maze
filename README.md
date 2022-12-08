@@ -4,22 +4,22 @@
 
 ### Ubuntu
 
-#### Necesary libraries
+Install the necesary libraries
 
 ```
 sudo apt install -y g++ cmake make git libgtk2.0-dev pkg-config
 ```
 
-#### Install Open CV
+Install Open CV
 
 https://www.geeksforgeeks.org/how-to-install-opencv-in-c-on-linux/
 
-#### Clone the repo
+Clone the repo
 ```
 git clone https://github.com/opencv/opencv.git
 ```
 
-#### Make Makefile with CMake
+Make Makefile with CMake
 
 Go to ```~/simulated_rescue_maze/code/build/``` in a terminal and execute:
 ```
