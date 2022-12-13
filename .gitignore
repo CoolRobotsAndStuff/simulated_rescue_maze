@@ -1,3 +1,7 @@
+#script to export the EREBUS_DIRECTORY variable
+code/add_erebus_path.sh
+
+#vscode folder
 .vscode
 
 #Compiled code
