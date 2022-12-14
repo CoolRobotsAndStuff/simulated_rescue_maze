@@ -1,6 +1,6 @@
 #include <webots/GPS.hpp>
 #include <webots/Gyro.hpp>
-
+#include "generic_data_structures.hpp"
 
 namespace sensors{
     class GPS{
@@ -9,11 +9,11 @@ namespace sensors{
 
             webots::GPS *device;
 
-            struct {double x; double y; double z;} position;
-            struct {double x; double y; double z;} previous_position;
-            struct {double x; double y; double z;} velocity;
-            struct {double x; double y; double z;} previous_velocity;
-            struct {double x; double y; double z;} acceleration;
+            DoubleVector3D position;
+            DoubleVector3D previous_position;
+            DoubleVector3D velocity;
+            DoubleVector3D previous_velocity;
+            DoubleVector3D acceleration;
 
             GPS(webots::GPS *gps_device, int time_step);
 
@@ -27,13 +27,13 @@ namespace sensors{
 
             webots::Gyro *device;
 
-            struct {double x; double y; double z;} orientation_rads;
-            struct {double x; double y; double z;} orientation;
-            struct {double x; double y; double z;} previous_angular_velocity_rads;
-            struct {double x; double y; double z;} angular_velocity_rads;
-            struct {double x; double y; double z;} angular_velocity;
-            struct {double x; double y; double z;} angular_acceleration_rads;
-            struct {double x; double y; double z;} angular_acceleration;
+            DoubleVector3D orientation_rads;
+            DoubleVector3D orientation;
+            DoubleVector3D previous_angular_velocity_rads;
+            DoubleVector3D angular_velocity_rads;
+            DoubleVector3D angular_velocity;
+            DoubleVector3D angular_acceleration_rads;
+            DoubleVector3D angular_acceleration;
         
             Gyroscope(webots::Gyro *gyro_device, int time_step);
 
