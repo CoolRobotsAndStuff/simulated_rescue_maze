@@ -1,7 +1,7 @@
 #include <iostream>
-#include "sensors.h"
+#include "sensors.hpp"
 #include <cmath>
-#include "utils.h"
+#include "utils.hpp"
 
 using namespace std;
 using namespace sensors;

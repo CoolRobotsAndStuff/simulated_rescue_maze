@@ -5,7 +5,7 @@ code/add_erebus_path.sh
 .vscode
 
 #Compiled code
-code/code
+code/code.out
 
 #CMake files
 code/build/
