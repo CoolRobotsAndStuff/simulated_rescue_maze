@@ -7,7 +7,7 @@ class FloatVector3D{
 
 class DoubleVector3D{
     public:
-        float x;
-        float y;
-        float z;
+        double x;
+        double y;
+        double z;
     };
