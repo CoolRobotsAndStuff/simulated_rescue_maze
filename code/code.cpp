@@ -2,9 +2,11 @@
 #include <string.h>
 #include <webots/Motor.hpp>
 #include <webots/Robot.hpp>
-#include "sensors.h"
+#include "sensors.hpp"
+#include "actuators.hpp"
 
 using namespace sensors;
+using namespace actuators;
 
 webots::Robot *robot = new webots::Robot();
 
@@ -12,11 +14,8 @@ int const time_step = 32;
 
 int main(){
     //Inside main:
-    webots::Motor *wheel_left = robot->getMotor("wheel1 motor");    //Step 1
-    webots::Motor *wheel_right = robot->getMotor("wheel2 motor");
-
-    wheel_left->setPosition(INFINITY);   //Step 2
-    wheel_right->setPosition(INFINITY);
+    Motor left_wheel(robot->getMotor("wheel1 motor"), time_step);    //Step 1
+    Motor right_wheel(robot->getMotor("wheel2 motor"), time_step);
 
     Gyroscope my_gyro(robot->getGyro("gyro"), 32);
     GPS my_gps(robot->getGPS("gps"), 32);
@@ -26,8 +25,9 @@ int main(){
         my_gps.print_values();
         my_gyro.update();
         my_gyro.print_values(true);
-        wheel_left->setVelocity(-1.0);    //Step 3
-        wheel_right->setVelocity(1.0);
+        right_wheel.set_velocity(0.1);
+        left_wheel.set_velocity(-0.1);
+
 
     };
     
