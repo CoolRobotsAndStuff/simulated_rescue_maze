@@ -1,3 +1,4 @@
+#pragma once
 #include "generic_data_structures.hpp"
 
 namespace env_model {
@@ -26,11 +27,11 @@ namespace env_model {
     class Robot{
         public:
             //mts
-            FloatVector3D position;
+            DoubleVector3D position;
             //mts*s
-            FloatVector3D velocity;
+            DoubleVector3D velocity;
             //mts*s*s
-            FloatVector3D acceleration;
+            DoubleVector3D acceleration;
 
             //degrees
             double orientation;
