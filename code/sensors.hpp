@@ -1,3 +1,4 @@
+#pragma once
 #include <webots/GPS.hpp>
 #include <webots/Gyro.hpp>
 #include <webots/Robot.hpp>

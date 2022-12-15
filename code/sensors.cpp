@@ -24,9 +24,12 @@ GPS::GPS(webots::GPS *gps_device, int time_step){
     }
 
 void GPS::print_values(){
-    cout << "position    | x: " << position.x << " y: " << position.y << " z: " << position.z << endl; // Print out the values of the sensor
-    cout << "velocity    | x: " << velocity.x << " y: " << velocity.y << " z: " << velocity.z << endl;
-    cout << "acceleration| x: " << acceleration.x << " y: " << acceleration.y << " z: " << acceleration.z << endl;
+    cout << "position    | ";
+    position.print();
+    cout << "velocity    | ";
+    velocity.print();
+    cout << "acceleration| ";
+    acceleration.print();
     
     }
 
@@ -72,9 +75,12 @@ Gyroscope::Gyroscope(webots::Gyro *gyro_device, int time_step){
 
 void Gyroscope::print_values(bool convert_to_degs=false){
     if (convert_to_degs){
-        cout << "orientation         | x: " << orientation.x << " y: " << orientation.y << " z: " << orientation.z << endl; // Print out the values of the sensor
-        cout << "angular_velocity    | x: " << angular_velocity.x << " y: " << angular_velocity.y << " z: " << angular_velocity.z << endl;
-        cout << "angular_acceleration| x: " << angular_acceleration.x << " y: " << angular_acceleration.y << " z: " << angular_acceleration.z << endl;
+        cout << "orientation         | ";
+        orientation.print();
+        cout << "angular_velocity    | ";
+        angular_velocity.print();
+        cout << "angular_acceleration| ";
+        angular_acceleration.print();
 
     }else{
         cout << "orientation         | x: " << orientation.x << " y: " << orientation.y << " z: " << orientation.z << endl; // Print out the values of the sensor
