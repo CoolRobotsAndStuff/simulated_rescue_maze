@@ -6,7 +6,7 @@
 using namespace std;
 using namespace sensors;
 
-GPS::GPS(webots::GPS *gps_device, int time_step){
+void GPS::init(webots::GPS *gps_device, int time_step){
     time_step_s = time_step * 0.001;
     device = gps_device;
     device->enable(time_step);
@@ -15,8 +15,12 @@ GPS::GPS(webots::GPS *gps_device, int time_step){
     position.z = device->getValues()[2];
 
     velocity.x = 0; velocity.y = 0; velocity.z = 0;
+}
 
-        
+GPS::GPS(){}
+
+GPS::GPS(webots::GPS *gps_device, int time_step){
+    init(gps_device, time_step);
     }
 
 void GPS::print_values(){
@@ -48,18 +52,23 @@ void GPS::update(){
     acceleration.z = velocity.z - previous_velocity.z;
 }
 
-
-Gyroscope::Gyroscope(webots::Gyro *gyro_device, int time_step){
+void Gyroscope::init(webots::Gyro *gyro_device, int time_step){
     time_step_s = time_step * 0.001;
     device = gyro_device;
     device->enable(time_step);
 
-
     angular_velocity_rads.x = device->getValues()[0];
     angular_velocity_rads.y = device->getValues()[1];
     angular_velocity_rads.z = device->getValues()[2];
+}
 
+Gyroscope::Gyroscope(){}
+
+Gyroscope::Gyroscope(webots::Gyro *gyro_device, int time_step){
+    init(gyro_device, time_step);
     }
+
+
 
 void Gyroscope::print_values(bool convert_to_degs=false){
     if (convert_to_degs){
@@ -79,9 +88,15 @@ void Gyroscope::update(){
     previous_angular_velocity_rads.y = angular_velocity_rads.y;
     previous_angular_velocity_rads.z = angular_velocity_rads.z;
 
-    angular_velocity_rads.x = device->getValues()[0];
-    angular_velocity_rads.y = device->getValues()[1];
-    angular_velocity_rads.z = device->getValues()[2];
+    if (!isnan(device->getValues()[0])){
+        angular_velocity_rads.x = device->getValues()[0];
+    };
+    if (!isnan(device->getValues()[1])){
+        angular_velocity_rads.y = device->getValues()[1];
+    };
+    if (!isnan(device->getValues()[2])){
+        angular_velocity_rads.z = device->getValues()[2];
+    };
 
     angular_velocity.x = rads2degs(device->getValues()[0]);
     angular_velocity.y = rads2degs(device->getValues()[1]);
@@ -102,4 +117,14 @@ void Gyroscope::update(){
     angular_acceleration.x = rads2degs(angular_acceleration_rads.x);
     angular_acceleration.y = rads2degs(angular_acceleration_rads.y);
     angular_acceleration.z = rads2degs(angular_acceleration_rads.z);
+}
+
+SensorManager::SensorManager(webots::Robot *robot, int time_step){
+    gps.init(robot->getGPS("gps"), time_step);
+    gyroscope.init(robot->getGyro("gyro"), time_step);
+}
+
+void SensorManager::update(){
+    gps.update();
+    gyroscope.update();
 }

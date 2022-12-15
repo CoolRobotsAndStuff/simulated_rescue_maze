@@ -16,7 +16,19 @@ int main(){
     //Inside main:
     Motor left_wheel(robot->getMotor("wheel1 motor"), time_step);    //Step 1
     Motor right_wheel(robot->getMotor("wheel2 motor"), time_step);
+    
+    SensorManager my_sensor_manager(robot, time_step);
 
+    while (robot->step(time_step) != -1) {
+        my_sensor_manager.update();
+        my_sensor_manager.gps.print_values();
+        my_sensor_manager.gyroscope.print_values(true);
+        right_wheel.set_velocity(0.1);
+        left_wheel.set_velocity(-0.1);
+
+    };
+
+    /*
     Gyroscope my_gyro(robot->getGyro("gyro"), 32);
     GPS my_gps(robot->getGPS("gps"), 32);
 
@@ -30,5 +42,6 @@ int main(){
 
 
     };
+    */
     
 }
