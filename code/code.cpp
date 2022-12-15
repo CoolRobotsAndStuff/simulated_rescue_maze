@@ -4,6 +4,8 @@
 #include <webots/Robot.hpp>
 #include "sensors.hpp"
 #include "actuators.hpp"
+#include "environment_model.hpp"
+#include "sensor_data_loader.hpp"
 
 using namespace sensors;
 using namespace actuators;
@@ -19,10 +21,18 @@ int main(){
     
     SensorManager my_sensor_manager(robot, time_step);
 
+    env_model::Robot my_robot_model;
+
+    SensorDataLoader my_data_loader;
+
     while (robot->step(time_step) != -1) {
         my_sensor_manager.update();
-        my_sensor_manager.gps.print_values();
-        my_sensor_manager.gyroscope.print_values(true);
+
+        my_robot_model = my_data_loader.load_sensor_data(my_robot_model, my_sensor_manager);
+
+        std::cout << "Orientation | " << my_robot_model.orientation << std::endl;
+        my_robot_model.position.print();
+
         right_wheel.set_velocity(0.1);
         left_wheel.set_velocity(-0.1);
 
