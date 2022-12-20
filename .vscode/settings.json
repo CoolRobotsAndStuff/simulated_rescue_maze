@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/code"
+    "cmake.sourceDirectory": "${workspaceFolder}/code",
+    "cmake.configureOnOpen": false
 }

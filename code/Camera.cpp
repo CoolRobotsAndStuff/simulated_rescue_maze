@@ -1,3 +1,4 @@
+#include <iostream>
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/DistanceSensor.hpp>
@@ -5,8 +6,7 @@
 #include <webots/Emitter.hpp>
 #include <webots/GPS.hpp>
 #include <opencv2/opencv.hpp>
-#include <Python.h>
-#include "numpy/arrayobject.h" // Include any other Numpy headers, UFuncs for example.
+#include <opencv2/highgui/highgui.hpp>
 #include <vector>
 
 using namespace webots;
@@ -31,14 +31,6 @@ Camera *colorSensor = robot->getCamera("color_sensor"); // Color sensor is a 1 p
 
 Emitter *emitter; // Used to send messages to supervisor (report victims/hazards)
 GPS *gps;
-
-// NUMPY INITILIZATION
-import_array();
-if (PyErr_Occurred()) {
-    std::cerr << "Failed to import numpy Python module(s)." << std::endl;
-    return NULL; // Or some suitable return value to indicate failure.
-}
-
 
 // [left wheel speed, right wheel speed]
 float speeds[2] = { max_velocity, max_velocity };
@@ -117,59 +109,8 @@ void report(char victimType) {
     robot->step(timeStep);
 }
 
-void get_image()
-{
-    image = camera.getImage()
-    image = np.frombuffer(image, np.uint8).reshape((camera.getHeight(), camera.getWidth(), 4))
-    frame = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
-    cv2.imshow("frame", frame)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Grayscale
-    cv2.imshow("grayScale", frame)
-    cv2.threshold(frame, 80, 255, cv2.THRESH_BINARY) # Threshold
-    cv2.imshow("thresh", frame)
-    cv2.waitKey(1) # Render imshows on screen
-}
 
-void get_flooor_color()
-{
-	image = colorSensor.getImage() # Step 4: Retrieve the image frame.
-    
-    # Get the individual RGB color channels from the pixel (0,0)
-    # Note that these functions require you to pass the width of the overall image in pixels.
-    # Since this is a 1px by 1px color sensor, the width of the image is just 1. 
-    r = colorSensor.imageGetRed(image, 1, 0, 0)
-    g = colorSensor.imageGetGreen(image, 1, 0, 0)
-    b = colorSensor.imageGetBlue(image, 1, 0, 0)
-    
-    print("r: " + str(r) + " g: " + str(g) + " b: " + str(b))
-}
-
-void flatten_image()
-{
-	tiles_up = 2
-	tiles_down = 0
-	tiles_side = 1
-
-	minimum_x = tile_resolution * tiles_side
-	maximum_x = tile_resolution * (tiles_side + 1)
-	minimum_y = tile_resolution * (tiles_up)
-	maximum_y = tile_resolution * (tiles_up + 1) - 40
-
-	img_points = np->array(([4,17],[35,6], [31,3], [8,3], ), dtype=np->float32)
-	final_points = np->array(([minimum_x,minimum_y],[maximum_x,minimum_y], [maximum_x,maximum_y], [minimum_x,maximum_y], ), dtype=np->float32)
-	
-	ipm_matrix = cv->getPerspectiveTransform(img_points, final_points, solveMethod=cv.DECOMP_SVD)
-        
-    final_x = tile_resolution * ((tiles_side * 2) + 1)
-    final_y = tile_resolution * (tiles_up + 1 + tiles_down)
-        
-    final_y_modiff = round(final_y * 1)#0.95
-
-    ipm = cv.warpPerspective(image, ipm_matrix, (final_x, final_y_modiff), flags=cv.INTER_NEAREST)
-    ipm = cv.resize(ipm, (final_x, final_y), interpolation=cv.INTER_CUBIC)
-}
-
-int main(){
+int main() {
 	leftDist = robot->getDistanceSensor("distance sensor3");    // Grab robot's left distance sensor
 	leftDist->enable(timeStep);     // Enable the distance sensor
 
@@ -209,22 +150,23 @@ int main(){
 		if (frontDist->getValue() < 0.05)
 			spin();
 
-		// if on black, turn away
-		/*
-		if (getColor() < 80) {
-			spin();
-			wheel_left->setVelocity(speeds[0]);
-			wheel_right->setVelocity(speeds[1]);
-			delay(600);
-		}
-		*/
-	/*
-		// if sees victim, report it
-		if (checkVic((void*)cam->getImage()))
-			report('T'); // Cannot determine type of victim, so always try 'T' for now
-	*/
 		wheel_left->setVelocity(speeds[0]);		// Send the speed values we have choosen to the robot
 		wheel_right->setVelocity(speeds[1]);
-	};
-}
 
+//////////////////////////////////////// CAMERA ////////////////////////////////////////
+		// Initialize viariables
+			Mat image;
+			Mat frame;
+			double r;
+			double g;
+			double b;
+
+		// Get Image
+			image = colorSensor->getImage();
+			r = colorSensor->imageGetRed(image, 1, 0, 0);
+			g = colorSensor->imageGetGreen(image, 1, 0, 0);
+			b = colorSensor->imageGetBlue(image, 1, 0, 0);
+
+			cout << "Red: " << r << endl << "Green: " << g << endl << "Blue: " << b << endl;
+	}
+}

@@ -106,6 +106,8 @@ void report(char victimType) {
 
 
 int main(){
+	Mat image;
+
 	leftDist = robot->getDistanceSensor("distance sensor3");    // Grab robot's left distance sensor
 	leftDist->enable(timeStep);     // Enable the distance sensor
 
