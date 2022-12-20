@@ -1,4 +1,4 @@
-# IITA - Robocup 2023 - Smulated Rescue Maze
+# IITA - Robocup 2023 - Simulated Rescue Maze
 
 ## Instalation
 
@@ -34,7 +34,15 @@ Set the environment variable ```EREBUS_DIRECTORY``` to the home direcotry of you
 ```
 export EREBUS_DIRECTORY=/home/username/Erebus-v21_2_4
 ```
-Run the compile script.
+Run the "create_makefiles.sh" script, so that the makefiles are created and the WEBOTS_HOME environment value is defined:
+```
+./create_makefiles.sh
+```
+Hop on the "compile.sh" script and set your Erebus Directory path. For example:
+```
+"/home/joaquin/Documents/RCJ2023-SimulatedRescueMaze/Erebus-v21_2_4/game/controllers/robot0Controller"
+```
+Run the compile script:
 ```
 ./compile.sh
 ```
