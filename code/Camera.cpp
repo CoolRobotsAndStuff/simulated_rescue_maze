@@ -154,15 +154,13 @@ int main() {
 		wheel_right->setVelocity(speeds[1]);
 
 //////////////////////////////////////// CAMERA ////////////////////////////////////////
-		// Initialize viariables
-			Mat image;
-			Mat frame;
+		// Initialize variables
+			const unsigned char* image = colorSensor->getImage();
 			double r;
 			double g;
 			double b;
 
 		// Get Image
-			image = colorSensor->getImage();
 			r = colorSensor->imageGetRed(image, 1, 0, 0);
 			g = colorSensor->imageGetGreen(image, 1, 0, 0);
 			b = colorSensor->imageGetBlue(image, 1, 0, 0);
