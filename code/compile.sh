@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd build
+export WEBOTS_HOME=/usr/local/webots
 make
 
 FILE=../code
