@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
   Robot *robot = new Robot();
 
-  Camera *cam = robot->getCamera("camera1");
+  Camera *cam = robot->getCamera("camera2");
 
   int timeStep = (int)robot->getBasicTimeStep();
  
