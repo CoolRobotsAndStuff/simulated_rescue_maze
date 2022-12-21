@@ -34,7 +34,7 @@ Set the environment variable ```EREBUS_DIRECTORY``` to the home direcotry of you
 ```
 export EREBUS_DIRECTORY=/home/username/Erebus-v21_2_4
 ```
-Run the "create_makefiles.sh" script, so that the makefiles are created and the WEBOTS_HOME environment value is defined:
+Run the "create_makefiles.sh" script, so that the makefiles are created and the ```WEBOTS_HOME``` environment value is defined:
 ```
 ./create_makefiles.sh
 ```
