@@ -10,19 +10,13 @@ int main(int argc, char **argv) {
 
   Robot *robot = new Robot();
 
-  Camera *cam = robot->getCamera("camera2");
-
   int timeStep = (int)robot->getBasicTimeStep();
  
+  Camera *cam = robot->getCamera("camera1");
   cam->enable(timeStep);
- 
+
   while (robot->step(timeStep) != -1) {
 
-    /*
-     * Convert the camera image into an openCV Mat. You must pass in the height
-     * and width of the camera in pixels, as well as specify CV_8UC4, meaning that
-     * it is in RGBA format.
-     */
     Mat frame(cam->getHeight(), cam->getWidth(), CV_8UC4, (void*)cam->getImage());
     
     imshow("frame", frame);
