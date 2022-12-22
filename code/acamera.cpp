@@ -1,7 +1,9 @@
 #include <iostream>
-#include <opencv2/opencv.hpp>
+
 #include <webots/Robot.hpp>
 #include <webots/Camera.hpp>
+#include <opencv2/opencv.hpp>
+
 
 using namespace webots;
 using namespace cv;
