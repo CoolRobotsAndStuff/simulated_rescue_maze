@@ -6,17 +6,18 @@
 using namespace webots;
 using namespace cv;
 
-int main(int argc, char **argv) {
-
+int main() 
+{
   Robot *robot = new Robot();
+
+  Camera *cam = robot->getCamera('theonlycamera');
 
   int timeStep = (int)robot->getBasicTimeStep();
  
-  Camera *cam = robot->getCamera("camera1");
   cam->enable(timeStep);
-
-  while (robot->step(timeStep) != -1) {
-
+ 
+  while (robot->step(timeStep) != -1) 
+  {
     Mat frame(cam->getHeight(), cam->getWidth(), CV_8UC4, (void*)cam->getImage());
     
     imshow("frame", frame);
@@ -28,8 +29,5 @@ int main(int argc, char **argv) {
     imshow("thresh", frame);
     
     waitKey(1); // Render imshows on screen
-  };
-
-  delete robot;
-  return 0;
+  }
 }
