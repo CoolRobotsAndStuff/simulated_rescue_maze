@@ -32,11 +32,11 @@ string AngleRotator::get_direction(double angle, string direction){
 
     } else if (direction == "farthest"){
         double angle_difference =  start_angle - angle;
-        if (180 > angle_difference > 0 or angle_difference < -180){
-            return "right";
+        if ((180 > angle_difference and angle_difference > 0) or angle_difference < -180){
+            return "left";
         } 
         else {
-            return "left";
+            return "right";
         }
     } 
 
