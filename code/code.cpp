@@ -6,6 +6,7 @@
 #include "actuators.hpp"
 #include "environment_model.hpp"
 #include "sensor_data_loader.hpp"
+#include "corrector.hpp"
 
 using namespace sensors;
 using namespace actuators;
@@ -25,6 +26,9 @@ int main(){
 
     SensorDataLoader my_data_loader;
 
+    // error_magin, min_velocity, max_velocity, min_velocity_cap, max_velocity_cap
+    AngleRotator my_angle_rotator(2., 0.2, 0.6, 0., 0.627);
+
     while (robot->step(time_step) != -1) {
         my_sensor_manager.update();
 
@@ -33,8 +37,12 @@ int main(){
         std::cout << "Orientation | " << my_robot_model.orientation << std::endl;
         my_robot_model.position.print();
 
-        right_wheel.set_velocity(0.1);
-        left_wheel.set_velocity(-0.1);
+        my_angle_rotator.set_current_angle(my_robot_model.orientation);
+
+        DifferentialVelocities wheel_velocities = my_angle_rotator.rotate_to_angle(45, "closest");
+
+        right_wheel.set_velocity(wheel_velocities.right);
+        left_wheel.set_velocity(wheel_velocities.left);
 
     };
 
