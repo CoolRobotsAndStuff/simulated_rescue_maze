@@ -32,16 +32,16 @@ int normalizeDegs(ang):
 
     return ang;
 
-class Camera {
-    public:
-        const unsigned char image;
-
-    //get_image obtais the video footage from the camera
-    int get_image(image) {
+//get_image obtais the video footage from the camera
+int get_image(image) {
         const unsigned char image = *getImage();
         return image;
-    }
+}
 
+class Camera (get_image()) {
+    public:
+        const unsigned char image;
+    
     //sharpen_image makes the image clearer and lowers noise
     int sharpen_image(image) {
         int kernel[9] = {[[-1,-1,-1], [-1,5,-1], [-1,-1,-1]]};
@@ -74,15 +74,15 @@ class Camera {
 
         Mat final_points = array(([minimum_x, minimum_y],  [maximum_x, minimum_y], [maximum_x, maximum_y], [minimum_x, maximum_y],), dtype=np.float32);
 
-        ipm_matrix = getPerspectiveTransform(img_points, final_points, solveMethod=DECOMP_SVD);
+        Mat ipm_matrix = getPerspectiveTransform(img_points, final_points, solveMethod=DECOMP_SVD);
 
         int final_x = tile_resolution * ((tiles_side *2) + 1);
         int final_y = tile_resolution * (tiles_up + 1 + tiles_down);
 
-        final_y_modified = round(final_y * 1);
+        int final_y_modified = round(final_y * 1);
 
-        ipm = warpPerspective(image, ipm_matrix, (final_x, final_y_modified), flags=INTER_NEAREST);
-        ipm = resize(ipm, (final_x, final_y), interpolation=INTER_CUBIC);
+        Mat ipm = warpPerspective(image, ipm_matrix, (final_x, final_y_modified), flags=INTER_NEAREST);
+        Mat ipm = resize(ipm, (final_x, final_y), interpolation=INTER_CUBIC);
 
         return ipm;
     }
@@ -92,32 +92,33 @@ class Camera {
         int y1, y2 = max(0, y), min(img.shape[0], y + img_overlay.shape[0]);
         int x1, x2 = max(0, x), min(img.shape[1], x + img_overlay.shape[1])
 
-        y1o, y2o = max(0, -y), min(img_overlay.shape[0], img.shape[0] - y)
-        x1o, x2o = max(0, -x), min(img_overlay.shape[1], img.shape[1] - x)
+        Mat y1o, y2o = max(0, -y), min(img_overlay.shape[0], img.shape[0] - y)
+        Mat x1o, x2o = max(0, -x), min(img_overlay.shape[1], img.shape[1] - x)
 
 
-        if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o:
+        if y1 >= y2 or x1 >= x2 or y1o >= y2o or x1o >= x2o {
             return
+        }
 
-        img_crop = img[y1:y2, x1:x2]
-        img_overlay_crop = img_overlay[y1o:y2o, x1o:x2o]
-        alpha = alpha_mask[y1o:y2o, x1o:x2o, np.newaxis]
-        alpha_inv = 1.0 - alpha
+        Mat img_crop = img[y1:y2, x1:x2]
+        Mat img_overlay_crop = img_overlay[y1o:y2o, x1o:x2o]
+        Mat alpha = alpha_mask[y1o:y2o, x1o:x2o, np.newaxis]
+        Mat alpha_inv = 1.0 - alpha
 
-        img_crop[:] = img_overlay_crop * alpha + img_crop * alpha_inv
+        Mat img_crop[:] = img_overlay_crop * alpha + img_crop * alpha_inv
 
     }
 
     //join_camera_images puts the different images all together and overlays them.
     int join_camera_images(images, translations) {
         int max_x = 0;
-        int max_y = 0
+        int max_y = 0;
 
         for(translation : translations){  
             int max_x = max(max_x, translation[1]);
             int max_y = max(max_y, translation[0]);
         }  
-        Mat background = zeros((max_x + images[0].shape[1], max_y + images[0].shape[0], 3), dtype=uint8)
+        Mat background = zeros((max_x + images[0].shape[1], max_y + images[0].shape[0], 3), dtype=uint8);
     }
 
     //rotate_image rotates the image
@@ -131,9 +132,9 @@ class Camera {
         list<Mat>{};
 
         for(img : images){
-            img = rot90(img, 3, (0,1));
-            img = flatten_image(img);
-            img = flip(img, 0);
+            Mat img = rot90(img, 3, (0,1));
+            Mat img = flatten_image(img);
+            Mat img = flip(img, 0);
             flattened_images.append(img)
         }
 
@@ -149,7 +150,7 @@ class Camera {
 }
 // FUNCTIONS FOR THE CAMERA
 
-
+/*
 int main()
 {
     const unsigned char image;
@@ -159,3 +160,4 @@ int main()
 		get_image(image)
     }
 }
+*/
