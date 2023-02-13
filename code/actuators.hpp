@@ -1,13 +1,19 @@
+#pragma once
+
 #include <webots/Motor.hpp>
 
 namespace actuators{
-    class Motor{
-        public:
-            double time_step_s;
-            webots::Motor *device;
-            float velocity;
-            Motor(webots::Motor *motor_device, int time_step);
-            void set_velocity(float input_velocity);
-    };
+class Motor{
+ public:
+  Motor(webots::Motor *motor_device, int time_step);
+  void setVelocity(float input_velocity);
+  float getVelocity();
+
+ private:
+  double m_timeStepSeconds;
+  float m_velocity;
+  webots::Motor *m_device;
+
+};
 
 }

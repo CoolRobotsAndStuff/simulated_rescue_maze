@@ -8,8 +8,8 @@ AngleRotator::AngleRotator(double error_margin, double min_velocity, double max_
     init(error_margin, min_velocity, max_velocity, min_velocity_cap, max_velocity_cap);
 }
 
-void AngleRotator::init(double error_magin, double min_velocity, double max_velocity, double min_velocity_cap, double max_velocity_cap){
-    this->error_margin = error_magin;
+void AngleRotator::init(double error_margin, double min_velocity, double max_velocity, double min_velocity_cap, double max_velocity_cap){
+    this->error_margin = error_margin;
     this->min_velocity = min_velocity;
     this->max_velocity = max_velocity;
     this->min_velocity_cap = min_velocity_cap;
@@ -23,7 +23,7 @@ void AngleRotator::set_current_angle(double angle){
 string AngleRotator::get_direction(double angle, string direction){
     if (direction == "closest"){
         double angle_difference =  current_angle - angle;
-        std::cout << "angle_difference=" << angle_difference << std::endl;
+        //std::cout << "angle_difference=" << angle_difference << std::endl;
         if ((180 > angle_difference and angle_difference > 0) or angle_difference < -180){
             return "right";
         } else{
@@ -72,7 +72,7 @@ DifferentialVelocities AngleRotator::rotate_to_angle(double angle, string direct
 
     string final_direction = get_direction(angle, direction);
 
-    std::cout << "final_direction = " << final_direction << std::endl;
+    //std::cout << "final_direction = " << final_direction << std::endl;
 
     if (final_direction == (string)"right"){
         return DifferentialVelocities((float)(velocity * -1), (float)(velocity));
@@ -80,5 +80,47 @@ DifferentialVelocities AngleRotator::rotate_to_angle(double angle, string direct
         return DifferentialVelocities((float)(velocity), (float)(velocity * -1));
     }
 
+
+}
+
+CoordinatesMover::CoordinatesMover(){};
+CoordinatesMover::CoordinatesMover(double error_margin, double min_velocity, double max_velocity, double min_velocity_cap, double max_velocity_cap){
+    init(error_margin, min_velocity, max_velocity, min_velocity_cap, max_velocity_cap);
+}
+
+void CoordinatesMover::init(double error_magin, double min_velocity, double max_velocity, double min_velocity_cap, double max_velocity_cap){
+    this->error_margin = error_magin;
+    this->min_velocity = min_velocity;
+    this->max_velocity = max_velocity;
+    this->min_velocity_cap = min_velocity_cap;
+    this->max_velocity_cap = max_velocity_cap;
+}
+
+void CoordinatesMover::set_current_position(Vector3D<double> position){
+    current_position.x = position.x;
+    current_position.y = position.y;
+}
+
+DifferentialVelocities CoordinatesMover::move_to_position(Vector3D<float> position, AngleRotator angle_rotator){
+    DifferentialVelocities final_velocities(max_velocity, max_velocity);
+    
+    Vector2D<double> position_2D;
+    position_2D.x = position.x;
+    position_2D.y = position.y;
+    
+    auto degs_and_dist = get_degs_and_dist_from_coords(current_position, position_2D);
+    double degs = degs_and_dist[0];
+    double dist = degs_and_dist[1];
+
+    if (get_shortest_dist_between_degs(angle_rotator.current_angle, degs) > angle_rotator.error_margin)
+    {
+        return angle_rotator.rotate_to_angle(degs, "closest");
+    } 
+    else if (dist < error_margin and dist > error_margin * -1){
+        return DifferentialVelocities(0., 0.);
+    }
+    else{
+        return final_velocities;
+    }
 
 }

@@ -4,8 +4,8 @@
 namespace env_model {
     class Camera{
         public:
-            FloatVector3D position; 
-            FloatVector3D orientation;
+            Vector3D<float> position; 
+            Vector3D<float> orientation;
             int resolution[2];
             float h_fov;
             float v_fov;
@@ -13,25 +13,25 @@ namespace env_model {
 
     class Wheel{
         public:
-            FloatVector3D position;
+            Vector3D<float> position;
             float diameter;
             float velocity;
     };
 
     class Lidar{
         public:
-            FloatVector3D position;
+            Vector3D<float> position;
             float v_fov;
     };
     
     class Robot{
         public:
             //mts
-            DoubleVector3D position;
+            Vector3D<double> position;
             //mts*s
-            DoubleVector3D velocity;
+            Vector3D<double> velocity;
             //mts*s*s
-            DoubleVector3D acceleration;
+            Vector3D<double> acceleration;
 
             //degrees
             double orientation;

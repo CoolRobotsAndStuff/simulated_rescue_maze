@@ -30,3 +30,11 @@ void FloatVector3D::print(){
 void DoubleVector3D::print(){
     cout << "x: " << x << " y: " << y << " z: " << z << endl;
 }
+
+void FloatVector2D::print(){
+    cout << "x: " << x << " y: " << y << endl;
+}
+
+void DoubleVector2D::print(){
+    cout << "x: " << x << " y: " << y << endl;
+}

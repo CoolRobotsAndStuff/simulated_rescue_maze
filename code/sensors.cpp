@@ -1,129 +1,150 @@
 #include <iostream>
+
 #include "sensors.hpp"
-#include <cmath>
 #include "utils.hpp"
 
-using namespace std;
-using namespace sensors;
+namespace simulated_rescue_maze{
 
-void GPS::init(webots::GPS *gps_device, int time_step){
-    time_step_s = time_step * 0.001;
-    device = gps_device;
-    device->enable(time_step);
-    position.x = device->getValues()[0];
-    position.y = device->getValues()[1];
-    position.z = device->getValues()[2];
+// GPS
+Vector3D<double> GPS::getPosition() {return m_position;}
+Vector3D<double> GPS::getVelocity() {return m_velocity;}
+Vector3D<double> GPS::getAcceleration() {return m_acceleration;}
+double GPS::getOrientationDegrees() {return m_orientationDegrees;}
+double GPS::getOrientationRadians() {return m_orientationRadians;}
 
-    velocity.x = 0; velocity.y = 0; velocity.z = 0;
+void GPS::initializeValues(){
+    m_position.x = m_device->getValues()[0];
+    m_position.y = m_device->getValues()[2];
+    m_position.z = m_device->getValues()[1];
+
+    m_velocity.x = 0; m_velocity.y = 0; m_velocity.z = 0;
 }
 
-GPS::GPS(){}
-
-GPS::GPS(webots::GPS *gps_device, int time_step){
-    init(gps_device, time_step);
-    }
-
-void GPS::print_values(){
-    cout << "position    | ";
-    position.print();
-    cout << "velocity    | ";
-    velocity.print();
-    cout << "acceleration| ";
-    acceleration.print();
-    
-    }
+void GPS::printValues(){
+    std::cout << "position    | ";
+    m_position.print();
+    std::cout << "velocity    | ";
+    m_velocity.print();
+    std::cout << "acceleration| ";
+    m_acceleration.print();
+    std::cout << "est_orientation| " << getOrientationDegrees();
+}
 
 void GPS::update(){
-    previous_position.x = position.x;
-    previous_position.y = position.y;
-    previous_position.z = position.z;
+    m_previousPosition.x = m_position.x;
+    m_previousPosition.y = m_position.y;
+    m_previousPosition.z = m_position.z;
 
-    position.x = device->getValues()[0];
-    position.y = device->getValues()[1];
-    position.z = device->getValues()[2];
+    m_position.x = m_device->getValues()[0];
+    m_position.y = m_device->getValues()[2];
+    m_position.z = m_device->getValues()[1];
 
-    previous_velocity.x = velocity.x;
-    previous_velocity.y = velocity.y;
-    previous_velocity.z = velocity.z;
+    m_previousVelocity.x = m_velocity.x;
+    m_previousVelocity.y = m_velocity.y;
+    m_previousVelocity.z = m_velocity.z;
 
-    velocity.x = (position.x - previous_position.x) / time_step_s;
-    velocity.y = (position.y - previous_position.y) / time_step_s;
-    velocity.z = (position.z - previous_position.z) / time_step_s;
+    m_velocity.x = (m_position.x - m_previousPosition.x) / m_timeStepSeconds;
+    m_velocity.y = (m_position.y - m_previousPosition.y) / m_timeStepSeconds;
+    m_velocity.z = (m_position.z - m_previousPosition.z) / m_timeStepSeconds;
 
-    acceleration.x = velocity.x - previous_velocity.x;
-    acceleration.y = velocity.y - previous_velocity.y;
-    acceleration.z = velocity.z - previous_velocity.z;
+    m_acceleration.x = m_velocity.x - m_previousVelocity.x;
+    m_acceleration.y = m_velocity.y - m_previousVelocity.y;
+    m_acceleration.z = m_velocity.z - m_previousVelocity.z;
+
+    DoubleVector2D coord_diff;
+    coord_diff.x = m_position.x - m_previousPosition.x;
+    coord_diff.y = m_position.y - m_previousPosition.y;
+
+    auto temp_array = get_rads_and_dist_form_coord_diff(coord_diff);
+    if (temp_array[1] > 0.001 or temp_array[1] < -0.001){
+        m_orientationRadians = normalize_rads(temp_array[0] + m_orientationOffsetRadians);
+        m_orientationDegrees = rads2degs(m_orientationRadians);
+    }else {
+        m_orientationDegrees = -1.;
+        m_orientationRadians = -1.;
+    }
 }
 
-void Gyroscope::init(webots::Gyro *gyro_device, int time_step){
-    time_step_s = time_step * 0.001;
-    device = gyro_device;
-    device->enable(time_step);
+//Gyro
 
-    angular_velocity_rads.x = device->getValues()[0];
-    angular_velocity_rads.y = device->getValues()[1];
-    angular_velocity_rads.z = device->getValues()[2];
+void Gyroscope::initializeValues(){
+    m_angularVelocityRadians.x = m_device->getValues()[0];
+    m_angularVelocityRadians.y = m_device->getValues()[2];
+    m_angularVelocityRadians.z = m_device->getValues()[1];
 }
 
-Gyroscope::Gyroscope(){}
-
-Gyroscope::Gyroscope(webots::Gyro *gyro_device, int time_step){
-    init(gyro_device, time_step);
+Vector3D<double> Gyroscope::getOrientationRadians(){return m_orientationRadians;}
+Vector3D<double> Gyroscope::getOrientationDegrees(){
+    Vector3D<double> orientationDegrees;
+    orientationDegrees.x = rads2degs(getOrientationRadians().x);
+    orientationDegrees.y = rads2degs(getOrientationRadians().y);
+    orientationDegrees.z = rads2degs(getOrientationRadians().z);
+    return orientationDegrees;
     }
 
-
-
-void Gyroscope::print_values(bool convert_to_degs=false){
-    if (convert_to_degs){
-        cout << "orientation         | ";
-        orientation.print();
-        cout << "angular_velocity    | ";
-        angular_velocity.print();
-        cout << "angular_acceleration| ";
-        angular_acceleration.print();
-
-    }else{
-        cout << "orientation         | x: " << orientation.x << " y: " << orientation.y << " z: " << orientation.z << endl; // Print out the values of the sensor
-        cout << "angular_velocity    | x: " << angular_velocity.x << " y: " << angular_velocity.y << " z: " << angular_velocity.z << endl;
-        cout << "angular_acceleration| x: " << angular_acceleration.x << " y: " << angular_acceleration.y << " z: " << angular_acceleration.z << endl;
+Vector3D<double> Gyroscope::getAngularVelocityRadians(){return m_angularVelocityRadians;}
+Vector3D<double> Gyroscope::getAngularVelocityDegrees(){    
+    Vector3D<double> angularVelocityDegrees;
+    angularVelocityDegrees.x = rads2degs(getOrientationRadians().x);
+    angularVelocityDegrees.y = rads2degs(getOrientationRadians().y);
+    angularVelocityDegrees.z = rads2degs(getOrientationRadians().z);
+    return angularVelocityDegrees;
     }
+
+Vector3D<double> Gyroscope::getAngularAccelerationDegrees(){return m_angularAccelerationDegrees;}
+Vector3D<double> Gyroscope::getAngularAccelerationRadians(){return m_angularAccelerationRadians;}
+
+void Gyroscope::setOrientationDegrees(Vector3D<double> t_orientationDegrees){
+    m_orientationRadians.x = degs2rads(t_orientationDegrees.x);
+    m_orientationRadians.x = degs2rads(t_orientationDegrees.y);
+    m_orientationRadians.x = degs2rads(t_orientationDegrees.z);
+}
+void Gyroscope::setOrientationRadians(Vector3D<double> t_orientationRadians){
+    m_orientationRadians = t_orientationRadians;
+}
+
+void Gyroscope::printValues(){
+    std::cout << "Orientation:";
+    getOrientationDegrees().print();
 }
 
 void Gyroscope::update(){
-    previous_angular_velocity_rads.x = angular_velocity_rads.x;
-    previous_angular_velocity_rads.y = angular_velocity_rads.y;
-    previous_angular_velocity_rads.z = angular_velocity_rads.z;
+    m_previousAngularVelocityRadians.x = m_angularVelocityRadians.x;
+    m_previousAngularVelocityRadians.y = m_angularVelocityRadians.y;
+    m_previousAngularVelocityRadians.z = m_angularVelocityRadians.z;
 
-    if (!isnan(device->getValues()[0])){
-        angular_velocity_rads.x = device->getValues()[0];
+    if (!isnan(m_device->getValues()[0])){
+        m_angularVelocityRadians.x = m_device->getValues()[0];
     };
-    if (!isnan(device->getValues()[1])){
-        angular_velocity_rads.y = device->getValues()[1];
+    if (!isnan(m_device->getValues()[2])){
+        m_angularVelocityRadians.y = m_device->getValues()[2];
     };
-    if (!isnan(device->getValues()[2])){
-        angular_velocity_rads.z = device->getValues()[2];
+    if (!isnan(m_device->getValues()[1])){
+        m_angularVelocityRadians.z = m_device->getValues()[1];
     };
 
-    angular_velocity.x = rads2degs(device->getValues()[0]);
-    angular_velocity.y = rads2degs(device->getValues()[1]);
-    angular_velocity.z = rads2degs(device->getValues()[2]);
+    m_angularVelocityDegrees.x = rads2degs(m_device->getValues()[0]);
+    m_angularVelocityDegrees.y = rads2degs(m_device->getValues()[2]);
+    m_angularVelocityDegrees.z = rads2degs(m_device->getValues()[1]);
 
-    orientation_rads.x = normalize_rads((orientation_rads.x + angular_velocity_rads.x * time_step_s));
-    orientation_rads.y = normalize_rads((orientation_rads.y + angular_velocity_rads.y * time_step_s));
-    orientation_rads.z = normalize_rads((orientation_rads.z + angular_velocity_rads.z * time_step_s));
+    m_orientationRadians.x = normalize_rads((m_orientationRadians.x + m_angularVelocityRadians.x * m_timeStepSeconds));
+    m_orientationRadians.y = normalize_rads((m_orientationRadians.y + m_angularVelocityRadians.y * m_timeStepSeconds));
+    m_orientationRadians.z = normalize_rads((m_orientationRadians.z + m_angularVelocityRadians.z * m_timeStepSeconds));
 
-    orientation.x = rads2degs(orientation_rads.x);
-    orientation.y = rads2degs(orientation_rads.y);
-    orientation.z = rads2degs(orientation_rads.z);
+    m_orientationDegrees.x = rads2degs(m_orientationRadians.x);
+    m_orientationDegrees.y = rads2degs(m_orientationRadians.y);
+    m_orientationDegrees.z = rads2degs(m_orientationRadians.z);
 
-    angular_acceleration_rads.x = angular_velocity_rads.x - previous_angular_velocity_rads.x;
-    angular_acceleration_rads.y = angular_velocity_rads.y - previous_angular_velocity_rads.y;
-    angular_acceleration_rads.z = angular_velocity_rads.z - previous_angular_velocity_rads.z;
+    m_angularAccelerationRadians.x = m_angularVelocityRadians.x -  m_previousAngularVelocityRadians.x;
+    m_angularAccelerationRadians.y = m_angularVelocityRadians.y -  m_previousAngularVelocityRadians.y;
+    m_angularAccelerationRadians.z = m_angularVelocityRadians.z -  m_previousAngularVelocityRadians.z;
 
-    angular_acceleration.x = rads2degs(angular_acceleration_rads.x);
-    angular_acceleration.y = rads2degs(angular_acceleration_rads.y);
-    angular_acceleration.z = rads2degs(angular_acceleration_rads.z);
+    m_angularAccelerationDegrees.x = rads2degs(m_angularAccelerationRadians.x);
+    m_angularAccelerationDegrees.y = rads2degs(m_angularAccelerationRadians.y);
+    m_angularAccelerationDegrees.z = rads2degs(m_angularAccelerationRadians.z);
 }
+
+//SensorManager
 
 SensorManager::SensorManager(webots::Robot *robot, int time_step){
     gps.init(robot->getGPS("gps"), time_step);
@@ -133,4 +154,11 @@ SensorManager::SensorManager(webots::Robot *robot, int time_step){
 void SensorManager::update(){
     gps.update();
     gyroscope.update();
+    if (gyroscope.angular_velocity.z < 10 and gyroscope.angular_velocity.z > -10 and gps.m_orientation != -1.){
+        std::cout << "USING GPS" << std::endl;
+        gyroscope.orientation.z = gps.m_orientation;
+        gyroscope.orientation_rads.z = gps.m_orientationRadians;
+    }   
+}
+
 }
