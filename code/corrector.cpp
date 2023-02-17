@@ -77,148 +77,100 @@ bool RotationToAngleManager::finishedRotating(){
   return m_finishedRotating;
 }
 
+bool RotationToAngleManager::isAtAngle(Angle t_angle){
+  return m_currentAngle.getAbsoluteDistanceTo(t_angle) < m_errorMargin;
+
+}
+
 void RotationToAngleManager::rotateToAngle(Angle t_angle, Direction t_direction){
-    t_angle.normalize();
+  t_angle.normalize();
 
-    if (m_isFirstTime){
-        m_startAngle = t_angle;
-        m_isFirstTime = false;
-        m_finishedRotating = false;
-    }
+  if (m_isFirstTime){
+    m_startAngle = t_angle;
+    m_isFirstTime = false;
+    m_finishedRotating = false;
+  }
 
-    /*
-    std::cout << "t_angle = ";
-    t_angle.print();
-    std::cout << std::endl;
+  if (isAtAngle(t_angle)){
+    m_finishedRotating = true;
+    m_leftWheel.setVelocity(0);
+    m_rightWheel.setVelocity(0);
+  }
 
-    std::cout << "m_startAngle = ";
-    m_startAngle.print();
-    std::cout << std::endl;
-    */
+  //Angle diff = m_currentAngle - t_angle;
+  Angle absoluteDifference = m_currentAngle.getAbsoluteDistanceTo(t_angle);
+
+  if (absoluteDifference.getDegrees() > 180){
+    absoluteDifference = Angle(360, Angle::DEGREES) - absoluteDifference;
+  }
+
+  double velocity = changeValueRange(absoluteDifference.getDegrees(), 0, 90, m_minVelocity, m_maxVelocity);
+
+  velocity = std::min(velocity, m_maxVelocityCap);
+  velocity = std::max(velocity, m_minVelocityCap);
+
+  Direction finalDirection = getDirection(t_angle, t_direction);
+
+  if (finalDirection == RIGHT){
+    m_rightWheel.setVelocity(float(velocity) * -1);
+    m_leftWheel.setVelocity(float(velocity));
+  }else {
+    m_rightWheel.setVelocity(float(velocity));
+    m_leftWheel.setVelocity(float(velocity) * -1);
+  }
+
+}
+
+// Constructor
+MovementToCoordinatesManager::MovementToCoordinatesManager() {
+    // Default constructor implementation
+}
+
+Vector2D<double> MovementToCoordinatesManager::getCurrentCoordinates() { return m_currentCoordinates; }
+void MovementToCoordinatesManager::setCurrentCoordinates(Vector2D<double> t_currentCoordinates) { m_currentCoordinates = t_currentCoordinates; }
+
+double MovementToCoordinatesManager::getMinVelocity() { return m_minVelocity; }
+void MovementToCoordinatesManager::setMinVelocity(double t_minVelocity) { m_minVelocity = t_minVelocity; }
+
+double MovementToCoordinatesManager::getMaxVelocity() { return m_maxVelocity; }
+void MovementToCoordinatesManager::setMaxVelocity(double t_maxVelocity) { m_maxVelocity = t_maxVelocity; }
+
+double MovementToCoordinatesManager::getMinVelocityCap() { return m_minVelocityCap; }
+void MovementToCoordinatesManager::setMinVelocityCap(double t_minVelocityCap) { m_minVelocityCap = t_minVelocityCap; }
+
+double MovementToCoordinatesManager::getMaxVelocityCap() { return m_maxVelocityCap; }
+void MovementToCoordinatesManager::setMaxVelocityCap(double t_maxVelocityCap) { m_maxVelocityCap = t_maxVelocityCap; }
+
+double MovementToCoordinatesManager::getErrorMargin() { return m_errorMargin; }
+void MovementToCoordinatesManager::setErrorMargin(double t_errorMargin) { m_errorMargin = t_errorMargin; }
 
 
-    Angle diff = m_currentAngle - t_angle;
+void  MovementToCoordinatesManager::setRotationToAngleManager(RotationToAngleManager t_rotationManager){
+  m_rotationManager = t_rotationManager;
+}
 
-    
-    Angle moveDiff;
-    moveDiff.setRadians(
-      std::max(m_currentAngle.getRadians(), t_angle.getRadians()) - 
-      std::min(m_currentAngle.getRadians(), t_angle.getRadians()));
-    
+void  MovementToCoordinatesManager::setWheels(Wheel t_rightWheel, Wheel m_leftWheel){
+  m_rightWheel = t_rightWheel;
+  m_leftWheel = m_leftWheel;
+}
 
-    if (moveDiff < m_errorMargin){
-        m_finishedRotating = true;
-        m_leftWheel.setVelocity(0);
-        m_rightWheel.setVelocity(0);
-    }
+// Move to the specified coordinates
+void MovementToCoordinatesManager::moveToCoordinates(Vector2D<double> t_coordinates) {
+  Angle angleToCoordinates = m_currentCoordinates.getSlopeToVector(t_coordinates);
+  double distanceToCoordinates = m_currentCoordinates.getDistanceToVector(t_coordinates);
+  if (m_rotationManager.isAtAngle(angleToCoordinates)){
+    m_rightWheel.setVelocity(1);
+    m_leftWheel.setVelocity(1);
+  } else{
+    m_rotationManager.rotateToAngle(angleToCoordinates, RotationToAngleManager::CLOSEST);
+  }
 
-    if (diff.getDegrees() > 180 or diff.getDegrees() < -180){
-        moveDiff = Angle(360, Angle::DEGREES) - moveDiff;
-    }
-
-
-
-    double velocity = changeValueRange(moveDiff.getDegrees(), 0, 90, m_minVelocity, m_maxVelocity);
-  
-    velocity = std::min(velocity, m_maxVelocityCap);
-    velocity = std::max(velocity, m_minVelocityCap);
-
-    Direction finalDirection = getDirection(t_angle, t_direction);
-
-    if (finalDirection == RIGHT){
-
-        m_rightWheel.setVelocity(float(velocity) * -1);
-        m_leftWheel.setVelocity(float(velocity));
-    }else {
-        m_rightWheel.setVelocity(float(velocity));
-        m_leftWheel.setVelocity(float(velocity) * -1);
-    }
 
 }
 
 }
 
 /*
-AngleRotator::AngleRotator(){}
-AngleRotator::AngleRotator(double error_margin, double m_minVelocity, double m_maxVelocity, double minVelocityCap, double max_velocity_cap){
-    init(error_margin, m_minVelocity, m_maxVelocity, minVelocityCap, max_velocity_cap);
-}
-
-void AngleRotator::init(double error_margin, double m_minVelocity, double m_maxVelocity, double minVelocityCap, double max_velocity_cap){
-    this->error_margin = error_margin;
-    this->m_minVelocity = m_minVelocity;
-    this->m_maxVelocity = m_maxVelocity;
-    this->minVelocityCap = minVelocityCap;
-    this->max_velocity_cap = max_velocity_cap;
-}
-
-void AngleRotator::set_current_angle(double angle){
-    m_currentAngle = angle;
-}
-
-string AngleRotator::get_direction(double angle, string direction){
-    if (direction == "closest"){
-        double angle_difference =  m_currentAngle - angle;
-        //std::cout << "angle_difference=" << angle_difference << std::endl;
-        if ((180 > angle_difference and angle_difference > 0) or angle_difference < -180){
-            return "right";
-        } else{
-            return "left";
-        }
-
-    } else if (direction == "farthest"){
-        double angle_difference =  m_startAngle - angle;
-        if ((180 > angle_difference and angle_difference > 0) or angle_difference < -180){
-            return "left";
-        } 
-        else {
-            return "right";
-        }
-    } 
-
-    else if (direction == "clockwise"){return "right";}
-    else if (direction == "counterclockwise"){return "left";}
-    
-    else {return direction;}
-
-}
-
-DifferentialVelocities AngleRotator::rotate_to_angle(double angle, string direction="closest"){
-    if (is_first_time){
-        m_startAngle = angle;
-        is_first_time = false;
-    }
-
-    double diff = m_currentAngle - angle;
-    double move_diff = max(m_currentAngle, angle) - min(m_currentAngle, angle);
-
-    if (move_diff < error_margin){
-        return DifferentialVelocities((float)0, (float)0);
-    }
-
-    if (diff > 180 or diff < -180){
-        move_diff = 360 - move_diff;
-    }
-            
-
-    double velocity = change_double_range(move_diff, 0, 90, m_minVelocity, m_maxVelocity);
-
-    velocity = min(velocity, max_velocity_cap);
-    velocity = max(velocity, minVelocityCap);
-
-    string final_direction = get_direction(angle, direction);
-
-    //std::cout << "final_direction = " << final_direction << std::endl;
-
-    if (final_direction == (string)"right"){
-        return DifferentialVelocities((float)(velocity * -1), (float)(velocity));
-    }else {
-        return DifferentialVelocities((float)(velocity), (float)(velocity * -1));
-    }
-
-
-}
-
 CoordinatesMover::CoordinatesMover(){};
 CoordinatesMover::CoordinatesMover(double error_margin, double m_minVelocity, double m_maxVelocity, double minVelocityCap, double max_velocity_cap){
     init(error_margin, m_minVelocity, m_maxVelocity, minVelocityCap, max_velocity_cap);

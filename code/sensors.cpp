@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "sensors.hpp"
 #include "utils.hpp"
@@ -40,35 +41,29 @@ void GPS::printValues(){
 }
 
 void GPS::update(){
-    m_previousPosition.x = m_position.x;
-    m_previousPosition.y = m_position.y;
-    m_previousPosition.z = m_position.z;
+    m_previousPosition = m_position;
 
     m_position.x = m_device->getValues()[0];
     m_position.y = m_device->getValues()[2];
     m_position.z = m_device->getValues()[1];
 
-    m_previousVelocity.x = m_velocity.x;
-    m_previousVelocity.y = m_velocity.y;
-    m_previousVelocity.z = m_velocity.z;
+    m_previousVelocity = m_velocity;
 
-    m_velocity.x = (m_position.x - m_previousPosition.x) / m_timeStepSeconds;
-    m_velocity.y = (m_position.y - m_previousPosition.y) / m_timeStepSeconds;
-    m_velocity.z = (m_position.z - m_previousPosition.z) / m_timeStepSeconds;
+    m_velocity = (m_position - m_previousPosition) / m_timeStepSeconds;
 
-    m_acceleration.x = m_velocity.x - m_previousVelocity.x;
-    m_acceleration.y = m_velocity.y - m_previousVelocity.y;
-    m_acceleration.z = m_velocity.z - m_previousVelocity.z;
+    m_acceleration = m_velocity - m_previousVelocity;
 
-    Vector2D<double> coord_diff;
-    coord_diff.x = m_position.x - m_previousPosition.x;
-    coord_diff.y = m_position.y - m_previousPosition.y;
+    Vector2D<double> position2D(m_position.x, m_position.y);
+    Vector2D<double> previousPosition2D(m_previousPosition.x, m_previousPosition.y);
 
-    auto temp_array = get_rads_and_dist_form_coord_diff(coord_diff);
-    if (temp_array[1] > 0.001 or temp_array[1] < -0.001){
+    Angle angleToPreviousPosition = position2D.getSlopeToVector(previousPosition2D);
+    double distanceToPreviousPosition = position2D.getDistanceToVector(previousPosition2D);
+
+    if (abs(distanceToPreviousPosition) > 0.001){
         m_isAbleToCalculateOrientation = true;
-        m_orientation.setRadians(temp_array[0] + m_orientationOffset.getRadians());
+        m_orientation = angleToPreviousPosition +  m_orientationOffset;
         m_orientation.normalize();
+
     }else {
         m_isAbleToCalculateOrientation = false;
     }
@@ -137,19 +132,13 @@ void Gyroscope::update(){
         m_angularVelocity.z.setRadians(m_device->getValues()[1]);
     };
 
-    
-
-    m_orientation.x.setRadians(m_orientation.x.getRadians() + m_angularVelocity.x.getRadians() * m_timeStepSeconds);
-    m_orientation.y.setRadians(m_orientation.y.getRadians() + m_angularVelocity.y.getRadians() * m_timeStepSeconds);
-    m_orientation.z.setRadians(m_orientation.z.getRadians() + m_angularVelocity.z.getRadians() * m_timeStepSeconds);
+    m_orientation = m_orientation + m_angularVelocity * m_timeStepSeconds;
 
     m_orientation.x.normalize();
     m_orientation.y.normalize();
     m_orientation.z.normalize();
 
-    m_angularAcceleration.x.setRadians(m_angularVelocity.x.getRadians() -  m_previousAngularVelocity.x.getRadians());
-    m_angularAcceleration.y.setRadians(m_angularVelocity.y.getRadians() -  m_previousAngularVelocity.y.getRadians());
-    m_angularAcceleration.z.setRadians(m_angularVelocity.z.getRadians() -  m_previousAngularVelocity.z.getRadians());
+    m_angularAcceleration = m_angularVelocity - m_angularAcceleration;
 }
 
 

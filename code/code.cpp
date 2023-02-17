@@ -39,12 +39,12 @@ int main(){
     while (robot->step(timeStepMilliseconds) != -1) {
 
         sensorManager.updateSensors();
-
         rotationManager.setCurrentAngle(sensorManager.getGyroscope().getOrientation().z);
-        rotationManager.rotateToAngle(simulated_rescue_maze::Angle(90, simulated_rescue_maze::Angle::DEGREES), simulated_rescue_maze::RotationToAngleManager::CLOSEST);
 
-        //rightWheel.setVelocity(1.);
-        //leftWheel.setVelocity(0.);
+        simulated_rescue_maze::Angle targetAngle = simulated_rescue_maze::Angle(270, simulated_rescue_maze::Angle::DEGREES);
+        rotationManager.rotateToAngle(targetAngle, simulated_rescue_maze::RotationToAngleManager::CLOSEST);
+        std::cout << rotationManager.finishedRotating() << std::endl;
+
 
         //sensorManager.getGps().printValues();
         sensorManager.getGyroscope().printValues();

@@ -20,6 +20,7 @@ class RotationToAngleManager{
     double t_maxVelocityCap = 1
     );
   
+  // Getters and Setters
   Angle getCurrentAngle();
   void setCurrentAngle(Angle t_angle);
 
@@ -40,8 +41,12 @@ class RotationToAngleManager{
 
   void setWheels(Wheel t_rightWheel, Wheel t_leftWheel);
 
+  // Has the robot finished the rotation
   bool finishedRotating();
 
+  bool isAtAngle(Angle t_angle);
+
+  // Rotate to an alngle in the specified direction
   void rotateToAngle(Angle t_angle, Direction t_direction);
 
  private:
@@ -66,8 +71,53 @@ class RotationToAngleManager{
   Direction getDirection(Angle t_angle, Direction t_criterion = CLOSEST);
 
 };
-}
 
+
+class MovementToCoordinatesManager {
+ public:
+  // Constructor
+  MovementToCoordinatesManager();
+
+  // Move to the specified coordinates
+  void moveToCoordinates(Vector2D<double> t_coordinates);
+
+  Vector2D<double> getCurrentCoordinates();
+  void setCurrentCoordinates(Vector2D<double> t_currentCoordinates);
+
+  double getMinVelocity();
+  void setMinVelocity(double t_minVelocity);
+
+  double getMaxVelocity();
+  void setMaxVelocity(double t_maxVelocity);
+
+  double getMinVelocityCap();
+  void setMinVelocityCap(double t_minVelocityCap);
+
+  double getMaxVelocityCap();
+  void setMaxVelocityCap(double t_maxVelocityCap);
+
+  double getErrorMargin();
+  void setErrorMargin(double t_errorMargin);
+
+  void setRotationToAngleManager(RotationToAngleManager t_rotationManager);
+
+  void setWheels(Wheel t_rightWheel, Wheel m_leftWheel);
+
+ private:
+  Wheel m_rightWheel;
+  Wheel m_leftWheel;
+  
+  Vector2D<double> m_currentCoordinates;
+  double m_minVelocity = 0;
+  double m_maxVelocity = 1;
+  double m_minVelocityCap = 0;
+  double m_maxVelocityCap = 1;
+  double m_errorMargin = 0.001;
+
+  RotationToAngleManager m_rotationManager;
+};
+
+}
 /*
 class CoordinatesMover{
     public:
