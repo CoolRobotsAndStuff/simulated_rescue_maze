@@ -1,7 +1,51 @@
 #include <iostream>
-#include "generic_data_structures.hpp"
 
-using namespace std;
+#include "generic_data_structures.hpp"
+#include "utils.hpp"
+
+
+namespace simulated_rescue_maze{
+
+// Constructors
+Angle::Angle() : value(0.0) {}
+
+Angle::Angle(double value, Unit unit) { 
+  if (unit == RADIANS) {
+    setRadians(value);
+  } else if (unit == DEGREES) {
+    setDegrees(value);
+  }
+}
+
+// Setters
+void Angle::setRadians(double value) {
+  this->value = value;
+}
+
+void Angle::setDegrees(double value) {
+  this->value = value * M_PI / 180.0;
+}
+
+// Getters
+double Angle::getRadians() {
+  return value;
+}
+
+double Angle::getDegrees() {
+  return value * 180.0 / M_PI;
+}
+
+void Angle::print() {
+  std::cout << this->getDegrees();
+}
+
+// Normalization
+void Angle::normalize() {
+  value = fmod(value, 2.0 * M_PI);
+  if (value < 0.0) {
+    value += 2.0 * M_PI;
+  }
+}
 
 DifferentialVelocities::DifferentialVelocities(){}
 
@@ -23,18 +67,15 @@ void DifferentialVelocities::set_velocities(float left, float right){
     this->right = right;
 }
 
-void FloatVector3D::print(){
-    cout << "x: " << x << " y: " << y << " z: " << z << endl;
+/*
+template <class Number>
+void Vector3D<Number>::print(){
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
 }
 
-void DoubleVector3D::print(){
-    cout << "x: " << x << " y: " << y << " z: " << z << endl;
-}
 
-void FloatVector2D::print(){
-    cout << "x: " << x << " y: " << y << endl;
+template<class Number> void Vector2D<Number>::print(){
+    std::cout << "x: " << x << " y: " << y << std::endl;
 }
-
-void DoubleVector2D::print(){
-    cout << "x: " << x << " y: " << y << endl;
+*/
 }

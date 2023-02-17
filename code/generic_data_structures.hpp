@@ -1,5 +1,102 @@
 #pragma once
+
+#include <iostream>
 #include <array>
+#include <cmath>
+
+namespace simulated_rescue_maze{
+class Angle {
+public:
+    // Supported units
+    enum Unit { RADIANS, DEGREES };
+
+    // Constructors
+    Angle();
+    Angle(double value, Unit unit = RADIANS);
+
+    // Setters
+    void setRadians(double value);
+    void setDegrees(double value);
+    // Getters
+    double getRadians();
+    double getDegrees();
+
+    void normalize();
+    
+    void print();
+
+    // Unary operators
+    Angle operator+() const {
+      return Angle(+value);
+    }
+    Angle operator-() const {
+      return Angle(-value);
+    }
+
+    // Binary arithmetic operators
+    Angle operator+(const Angle& other) const {
+      return Angle(value + other.value);
+    }
+    Angle operator-(const Angle& other) const {
+      return Angle(value - other.value);
+    }
+    Angle operator*(const Angle& other) const {
+      return Angle(value * other.value);
+    }
+    Angle operator/(const Angle& other) const {
+      return Angle(value / other.value);
+    }
+    Angle operator%(const Angle& other) const {
+      return Angle(std::fmod(value, other.value));
+    }
+
+    // Compound assignment operators
+    Angle& operator+=(const Angle& other) {
+      value += other.value;
+      return *this;
+    }
+    Angle& operator-=(const Angle& other) {
+      value -= other.value;
+      return *this;
+    }
+    Angle& operator*=(const Angle& other) {
+      value *= other.value;
+      return *this;
+    }
+    Angle& operator/=(const Angle& other) {
+      value /= other.value;
+      return *this;
+    }
+    Angle& operator%=(const Angle& other) {
+      value = std::fmod(value, other.value);
+      return *this;
+    }
+
+    // Comparison operators
+    bool operator==(const Angle& other) const {
+      return value == other.value;
+    }
+    bool operator!=(const Angle& other) const {
+      return value != other.value;
+    }
+    bool operator<(const Angle& other) const {
+      return value < other.value;
+    }
+    bool operator>(const Angle& other) const {
+      return value > other.value;
+    }
+    bool operator<=(const Angle& other) const {
+      return value <= other.value;
+    }
+    bool operator>=(const Angle& other) const {
+      return value >= other.value;
+    }
+
+private:
+    double value;
+    // Normalization
+    
+};
 
 class DifferentialVelocities{
  public:
@@ -19,7 +116,10 @@ class Vector3D{
   Number x;
   Number y;
   Number z;
-  void print();
+  void print(){
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+  }
+
 };
 
 template <class Number>
@@ -27,39 +127,9 @@ class Vector2D{
  public:
   Number x;
   Number y;
-  void print();
+  void print(){
+    std::cout << "x: " << x << " y: " << y << std::endl;
+  };
 };
 
-template <class ConversionAngle>
-class AngleDegrees : public Vector3D<double> {
- public:
-  virtual ConversionAngle convertToRadians() = 0;
-};
-
-template <class ConversionAngle>
-class AngleRadians : public Vector3D<double> {
- public:
-  virtual ConversionAngle convertToDegrees() = 0;
-};
-
-
-class AngleDegrees3D : AngleDegrees<AngleRadians3D>{
- public:
-  AngleRadians3D convertToRadians();
-};
-
-class AngleRadians3D : AngleRadians<AngleDegrees3D>{
- public:
-  AngleDegrees3D convertToDegrees();
-};
-
-
-class AngleDegrees2D : AngleDegrees<AngleRadians2D>{
- public:
-  AngleRadians2D convertToRadians();
-};
-
-class AngleRadians2D : AngleRadians<AngleDegrees2D>{
- public:
-  AngleDegrees2D convertToDegrees();
-};
+}

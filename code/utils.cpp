@@ -1,7 +1,7 @@
 #include "utils.hpp"
 #include <cmath>
 
-
+namespace simulated_rescue_maze{
 double rads2degs(double rads){
   return rads * (double(180) / M_PI);
   }
@@ -25,30 +25,17 @@ double normalize_rads(double rads){
   return rads;
 }
 
-float change_float_range(float value, float min, float max, float new_min, float new_max){
-  float old_range = (max - min);
+double changeValueRange(double t_value, double t_min, double t_max, double t_new_min, double t_new_max){
+  double old_range = (t_max - t_min);
   if (old_range == 0){
-    return min;
+    return t_min;
   }    
   else
   {
-    float new_range = (new_max - new_min);
-    return (((value - min) * new_range) / old_range) + new_min;
+    double new_range = (t_new_max - t_new_min);
+    return (((t_value - t_min) * new_range) / old_range) + t_new_min;
   }
 }
-
-double change_double_range(double value, double min, double max, double new_min, double new_max){
-  double old_range = (max - min);
-  if (old_range == 0){
-    return min;
-  }    
-  else
-  {
-    double new_range = (new_max - new_min);
-    return (((value - min) * new_range) / old_range) + new_min;
-  }
-}
-
 
 double get_dist_from_coord_diff(Vector2D<double> coordinate_difference){
   return sqrt(pow(coordinate_difference.x, 2) + pow(coordinate_difference.y, 2));
@@ -112,4 +99,6 @@ double get_shortest_dist_between_degs(double ang1, double ang2){
   double dist1 = max_ang - min_ang;
   double dist2 = (360 + min_ang) - max_ang;
   return std::min(dist1, dist2);
+}
+
 }

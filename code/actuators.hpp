@@ -2,18 +2,19 @@
 
 #include <webots/Motor.hpp>
 
-namespace actuators{
-class Motor{
+#include "device.hpp"
+
+namespace simulated_rescue_maze{
+class Wheel : public Device<webots::Motor>{
  public:
-  Motor(webots::Motor *motor_device, int time_step);
-  void setVelocity(float input_velocity);
+
+  void setVelocity(float t_velocity);
   float getVelocity();
 
- private:
-  double m_timeStepSeconds;
-  float m_velocity;
-  webots::Motor *m_device;
+  void initializeValues();
 
+ private:
+  float m_velocity;
 };
 
 }

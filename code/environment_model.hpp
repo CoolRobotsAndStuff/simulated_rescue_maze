@@ -1,55 +1,55 @@
 #pragma once
+
 #include "generic_data_structures.hpp"
 
-namespace env_model {
-    class Camera{
-        public:
-            Vector3D<float> position; 
-            Vector3D<float> orientation;
-            int resolution[2];
-            float h_fov;
-            float v_fov;
-    };
+namespace simulated_rescue_maze {
+namespace environment_model{
 
-    class Wheel{
-        public:
-            Vector3D<float> position;
-            float diameter;
-            float velocity;
-    };
+struct Camera{
+  Vector3D<float> position; 
+  Vector3D<float> orientation;
+  int resolution[2];
+  float h_fov;
+  float v_fov;
+};
 
-    class Lidar{
-        public:
-            Vector3D<float> position;
-            float v_fov;
-    };
-    
-    class Robot{
-        public:
-            //mts
-            Vector3D<double> position;
-            //mts*s
-            Vector3D<double> velocity;
-            //mts*s*s
-            Vector3D<double> acceleration;
+struct Wheel{
+  Vector3D<float> position;
+  float diameter;
+  float velocity;
+};
 
-            //degrees
-            double orientation;
-            //degrees*s
-            double angular_velocity;
-            //degrees*s*s
-            double angular_acceleration;
+struct Lidar{
+  Vector3D<float> position;
+  float v_fov;
+};
 
-            //mts
-            float diameter;
+struct Robot{
+  //mts
+  Vector3D<double> position;
+  //mts*s
+  Vector3D<double> velocity;
+  //mts*s*s
+  Vector3D<double> acceleration;
 
-            float wheel_diameter;
+  //degrees
+  double orientation;
+  //degrees*s
+  double angular_velocity;
+  //degrees*s*s
+  double angular_acceleration;
 
-            //mts * s
-            Wheel left_wheel;
-            Wheel right_wheel;
+  //mts
+  float diameter;
 
-            Camera cameras[3];
-    };
+  float wheel_diameter;
 
+  //mts * s
+  Wheel left_wheel;
+  Wheel right_wheel;
+
+  Camera cameras[3];
+};
+
+}
 }
