@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <limits>
 
@@ -63,7 +65,7 @@ class RotationToAngleManager{
   double m_minVelocityCap = 0;
   double m_maxVelocityCap = 1;
 
-  Angle m_errorMargin = Angle(2, Angle::DEGREES);
+  Angle m_errorMargin = Angle(3, Angle::DEGREES);
 
   Wheel m_rightWheel;
   Wheel m_leftWheel;
@@ -80,6 +82,10 @@ class MovementToCoordinatesManager {
 
   // Move to the specified coordinates
   void moveToCoordinates(Vector2D<double> t_coordinates);
+
+  bool finishedMoving();
+
+  void setCurrentAngle(Angle t_angle);
 
   Vector2D<double> getCurrentCoordinates();
   void setCurrentCoordinates(Vector2D<double> t_currentCoordinates);
@@ -101,7 +107,7 @@ class MovementToCoordinatesManager {
 
   void setRotationToAngleManager(RotationToAngleManager t_rotationManager);
 
-  void setWheels(Wheel t_rightWheel, Wheel m_leftWheel);
+  void setWheels(Wheel t_rightWheel, Wheel t_leftWheel);
 
  private:
   Wheel m_rightWheel;
@@ -114,7 +120,9 @@ class MovementToCoordinatesManager {
   double m_maxVelocityCap = 1;
   double m_errorMargin = 0.001;
 
-  RotationToAngleManager m_rotationManager;
+  bool m_finishedMoving;
+
+  RotationToAngleManager m_rotationManager = RotationToAngleManager();
 };
 
 }

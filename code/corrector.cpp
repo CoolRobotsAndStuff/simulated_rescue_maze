@@ -126,6 +126,10 @@ MovementToCoordinatesManager::MovementToCoordinatesManager() {
     // Default constructor implementation
 }
 
+void MovementToCoordinatesManager::setCurrentAngle(Angle t_angle){
+  m_rotationManager.setCurrentAngle(t_angle);
+}
+
 Vector2D<double> MovementToCoordinatesManager::getCurrentCoordinates() { return m_currentCoordinates; }
 void MovementToCoordinatesManager::setCurrentCoordinates(Vector2D<double> t_currentCoordinates) { m_currentCoordinates = t_currentCoordinates; }
 
@@ -147,25 +151,38 @@ void MovementToCoordinatesManager::setErrorMargin(double t_errorMargin) { m_erro
 
 void  MovementToCoordinatesManager::setRotationToAngleManager(RotationToAngleManager t_rotationManager){
   m_rotationManager = t_rotationManager;
+  //m_rotationManager.setWheels(m_rightWheel, m_leftWheel);
 }
 
-void  MovementToCoordinatesManager::setWheels(Wheel t_rightWheel, Wheel m_leftWheel){
+void  MovementToCoordinatesManager::setWheels(Wheel t_rightWheel, Wheel t_leftWheel){
   m_rightWheel = t_rightWheel;
-  m_leftWheel = m_leftWheel;
+  m_leftWheel = t_leftWheel;
+  m_rotationManager.setWheels(t_rightWheel, t_leftWheel);
 }
 
 // Move to the specified coordinates
 void MovementToCoordinatesManager::moveToCoordinates(Vector2D<double> t_coordinates) {
   Angle angleToCoordinates = m_currentCoordinates.getSlopeToVector(t_coordinates);
+  angleToCoordinates.normalize();
+  //std::cout << "angle to coordinates: ";
+  //angleToCoordinates.print();
+  //std::cout << std::endl;
   double distanceToCoordinates = m_currentCoordinates.getDistanceToVector(t_coordinates);
-  if (m_rotationManager.isAtAngle(angleToCoordinates)){
+  m_finishedMoving = false;
+  if (distanceToCoordinates < m_errorMargin){
+    m_rightWheel.setVelocity(0);
+    m_leftWheel.setVelocity(0);
+    m_finishedMoving = true;
+  } else if (m_rotationManager.isAtAngle(angleToCoordinates)){
     m_rightWheel.setVelocity(1);
     m_leftWheel.setVelocity(1);
   } else{
     m_rotationManager.rotateToAngle(angleToCoordinates, RotationToAngleManager::CLOSEST);
   }
+}
 
-
+bool MovementToCoordinatesManager::finishedMoving(){
+  return m_finishedMoving;
 }
 
 }

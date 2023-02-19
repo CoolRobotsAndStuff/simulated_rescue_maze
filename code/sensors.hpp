@@ -63,6 +63,38 @@ class Gyroscope : public Device<webots::Gyro>{
   Vector3D<Angle> m_angularAcceleration;
 };
 
+class PlacementSensor{
+ public:
+  PlacementSensor();
+  void setGpsDevice(webots::GPS *t_gps);
+  void setGyroscopeDevice(webots::Gyro *t_gyroscope);
+
+  GPS getGps();
+  Gyroscope getGyroscope();
+
+  Transform3D<double> getPlacement();
+  void setPlacement(Transform3D<double> t_placement);
+
+  void setTimeStep(int t_timeStepMilliseconds);
+
+  virtual void enable();
+  virtual void disable();
+
+  void initializeValues();
+  void update();
+  
+
+  void printValues();
+
+  bool isGoingStraight();
+
+
+ private:
+  GPS m_gps;
+  Gyroscope m_gyroscope;
+  Transform3D<double> m_placement;
+};
+
 class SensorManager {
  public:
   GPS getGps();
@@ -76,6 +108,7 @@ class SensorManager {
   GPS m_gps;
   Gyroscope m_gyroscope;
 
+  
 
 };
 }

@@ -112,144 +112,6 @@ private:
     double value;
 };
 
-class DifferentialVelocities{
- public:
-  float left;
-  float right;
-
-  DifferentialVelocities();
-  DifferentialVelocities(float left, float right);
-  std::array<float, 2> get_array();
-  void set_array(std::array<float, 2> input_array);
-  void set_velocities(float left, float right);
-};
-
-template <class Number>
-class Vector3D {
-public:
-
-  Vector3D(){}
-
-  Vector3D(Number t_x, Number t_y, Number t_z){
-    x = t_x;
-    y = t_y;
-    z = t_z;
-  }
-
-  Number x;
-  Number y;
-  Number z;
-  void print() {
-    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-  }
-
-  // Unary operators
-  Vector3D operator+() const {
-    return Vector3D(+x, +y, +z);
-  }
-  Vector3D operator-() const {
-    return Vector3D(-x, -y, -z);
-  }
-
-  // Binary arithmetic operators
-  Vector3D operator+(const Vector3D& other) const {
-    return Vector3D(x + other.x, y + other.y, z + other.z);
-  }
-  Vector3D operator-(const Vector3D& other) const {
-    return Vector3D(x - other.x, y - other.y, z - other.z);
-  }
-  Vector3D operator*(const Vector3D& other) const {
-    return Vector3D(x * other.x, y * other.y, z * other.z);
-  }
-  Vector3D operator/(const Vector3D& other) const {
-    return Vector3D(x / other.x, y / other.y, z / other.z);
-  }
-  Vector3D operator%(const Vector3D& other) const {
-    return Vector3D(std::fmod(x, other.x), std::fmod(y, other.y), std::fmod(z, other.z));
-  }
-
-  // Compound assignment operators
-  Vector3D& operator+=(const Vector3D& other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    return *this;
-  }
-  Vector3D& operator-=(const Vector3D& other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    return *this;
-  }
-  Vector3D& operator*=(const Vector3D& other) {
-    x *= other.x;
-    y *= other.y;
-    z *= other.z;
-    return *this;
-  }
-  Vector3D& operator/=(const Vector3D& other) {
-    x /= other.x;
-    y /= other.y;
-    z /= other.z;
-    return *this;
-  }
-  Vector3D& operator%=(const Vector3D& other) {
-    x = std::fmod(x, other.x);
-    y = std::fmod(y, other.y);
-    z = std::fmod(z, other.z);
-    return *this;
-  }
-
-  // Binary arithmetic operators with numbers
-  Vector3D operator+(const Number& other) const {
-    return Vector3D(x + other, y + other, z + other);
-  }
-  Vector3D operator-(const Number& other) const {
-    return Vector3D(x - other, y - other, z - other);
-  }
-  Vector3D operator*(const Number& other) const {
-    return Vector3D(x * other, y * other, z * other);
-  }
-  Vector3D operator/(const Number& other) const {
-    return Vector3D(x / other, y / other, z / other);
-  }
-  Vector3D operator%(const Number& other) const {
-    return Vector3D(std::fmod(x, other), std::fmod(y, other), std::fmod(z, other));
-  }
-
-  // Compound assignment operators
-  Vector3D& operator+=(const Number& other) {
-    x += other;
-    y += other;
-    z += other;
-    return *this;
-  }
-  Vector3D& operator-=(const Number& other) {
-    x -= other;
-    y -= other;
-    z -= other;
-    return *this;
-  }
-  Vector3D& operator*=(const Number& other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    return *this;
-  }
-  Vector3D& operator/=(const Number& other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    return *this;
-  }
-  Vector3D& operator%=(const Number& other) {
-    x = std::fmod(x, other);
-    y = std::fmod(y, other);
-    z = std::fmod(z, other);
-    return *this;
-  }
-
-};
 
 template <class Number>
 class Vector2D {
@@ -377,6 +239,180 @@ public:
     return *this;
   }
 
+};
+
+
+template <class Number>
+class Vector3D {
+public:
+
+  Vector3D(){}
+
+  Vector3D(Number t_x, Number t_y, Number t_z){
+    x = t_x;
+    y = t_y;
+    z = t_z;
+  }
+
+  Number x;
+  Number y;
+  Number z;
+  void print() {
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+  }
+
+  Vector2D<Number> to2D(){
+    return Vector2D<Number>(x, y);
+  }
+
+  // Unary operators
+  Vector3D operator+() const {
+    return Vector3D(+x, +y, +z);
+  }
+  Vector3D operator-() const {
+    return Vector3D(-x, -y, -z);
+  }
+
+  // Binary arithmetic operators
+  Vector3D operator+(const Vector3D& other) const {
+    return Vector3D(x + other.x, y + other.y, z + other.z);
+  }
+  Vector3D operator-(const Vector3D& other) const {
+    return Vector3D(x - other.x, y - other.y, z - other.z);
+  }
+  Vector3D operator*(const Vector3D& other) const {
+    return Vector3D(x * other.x, y * other.y, z * other.z);
+  }
+  Vector3D operator/(const Vector3D& other) const {
+    return Vector3D(x / other.x, y / other.y, z / other.z);
+  }
+  Vector3D operator%(const Vector3D& other) const {
+    return Vector3D(std::fmod(x, other.x), std::fmod(y, other.y), std::fmod(z, other.z));
+  }
+
+  // Compound assignment operators
+  Vector3D& operator+=(const Vector3D& other) {
+    x += other.x;
+    y += other.y;
+    z += other.z;
+    return *this;
+  }
+  Vector3D& operator-=(const Vector3D& other) {
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    return *this;
+  }
+  Vector3D& operator*=(const Vector3D& other) {
+    x *= other.x;
+    y *= other.y;
+    z *= other.z;
+    return *this;
+  }
+  Vector3D& operator/=(const Vector3D& other) {
+    x /= other.x;
+    y /= other.y;
+    z /= other.z;
+    return *this;
+  }
+  Vector3D& operator%=(const Vector3D& other) {
+    x = std::fmod(x, other.x);
+    y = std::fmod(y, other.y);
+    z = std::fmod(z, other.z);
+    return *this;
+  }
+
+  // Binary arithmetic operators with numbers
+  Vector3D operator+(const Number& other) const {
+    return Vector3D(x + other, y + other, z + other);
+  }
+  Vector3D operator-(const Number& other) const {
+    return Vector3D(x - other, y - other, z - other);
+  }
+  Vector3D operator*(const Number& other) const {
+    return Vector3D(x * other, y * other, z * other);
+  }
+  Vector3D operator/(const Number& other) const {
+    return Vector3D(x / other, y / other, z / other);
+  }
+  Vector3D operator%(const Number& other) const {
+    return Vector3D(std::fmod(x, other), std::fmod(y, other), std::fmod(z, other));
+  }
+
+  // Compound assignment operators
+  Vector3D& operator+=(const Number& other) {
+    x += other;
+    y += other;
+    z += other;
+    return *this;
+  }
+  Vector3D& operator-=(const Number& other) {
+    x -= other;
+    y -= other;
+    z -= other;
+    return *this;
+  }
+  Vector3D& operator*=(const Number& other) {
+    x *= other;
+    y *= other;
+    z *= other;
+    return *this;
+  }
+  Vector3D& operator/=(const Number& other) {
+    x /= other;
+    y /= other;
+    z /= other;
+    return *this;
+  }
+  Vector3D& operator%=(const Number& other) {
+    x = std::fmod(x, other);
+    y = std::fmod(y, other);
+    z = std::fmod(z, other);
+    return *this;
+  }
+
+};
+
+
+template <class Number>
+struct Transform2D {
+  Transform2D(){};
+  Transform2D(Vector2D<Number> t_position, Vector2D<Angle> t_orientation){
+    position = t_position;
+    orientation = t_orientation;
+  };
+  Vector2D<Number> position;
+  Vector2D<Angle> orientation;
+};
+
+
+template <class Number>
+struct Transform3D {
+  Transform3D(){};
+
+  Transform2D<Number> to2D() {
+    return Transform2D<Number>(position.to2D(), orientation.to2D());
+  }
+  
+  Vector3D<Number> position;
+  Vector3D<Number> velocity;
+  Vector3D<Number> acceleration;
+
+  Vector3D<Angle> orientation;
+  Vector3D<Angle> angularVelocity;
+  Vector3D<Angle> angularAcceleration;
+};
+
+class DifferentialVelocities{
+ public:
+  float left;
+  float right;
+
+  DifferentialVelocities();
+  DifferentialVelocities(float left, float right);
+  std::array<float, 2> get_array();
+  void set_array(std::array<float, 2> input_array);
+  void set_velocities(float left, float right);
 };
 
 }

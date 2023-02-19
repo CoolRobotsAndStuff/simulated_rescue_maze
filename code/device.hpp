@@ -18,8 +18,6 @@ class Device{
     m_device = t_device;
   };
 
-
-
   virtual void initializeValues(){};
 
  protected:
