@@ -151,7 +151,6 @@ void MovementToCoordinatesManager::setErrorMargin(double t_errorMargin) { m_erro
 
 void  MovementToCoordinatesManager::setRotationToAngleManager(RotationToAngleManager t_rotationManager){
   m_rotationManager = t_rotationManager;
-  //m_rotationManager.setWheels(m_rightWheel, m_leftWheel);
 }
 
 void  MovementToCoordinatesManager::setWheels(Wheel t_rightWheel, Wheel t_leftWheel){
@@ -186,48 +185,3 @@ bool MovementToCoordinatesManager::finishedMoving(){
 }
 
 }
-
-/*
-CoordinatesMover::CoordinatesMover(){};
-CoordinatesMover::CoordinatesMover(double error_margin, double m_minVelocity, double m_maxVelocity, double minVelocityCap, double max_velocity_cap){
-    init(error_margin, m_minVelocity, m_maxVelocity, minVelocityCap, max_velocity_cap);
-}
-
-void CoordinatesMover::init(double error_magin, double m_minVelocity, double m_maxVelocity, double minVelocityCap, double max_velocity_cap){
-    this->error_margin = error_magin;
-    this->m_minVelocity = m_minVelocity;
-    this->m_maxVelocity = m_maxVelocity;
-    this->minVelocityCap = minVelocityCap;
-    this->max_velocity_cap = max_velocity_cap;
-}
-
-void CoordinatesMover::set_current_position(Vector3D<double> position){
-    current_position.x = position.x;
-    current_position.y = position.y;
-}
-
-DifferentialVelocities CoordinatesMover::move_to_position(Vector3D<float> position, AngleRotator angle_rotator){
-    DifferentialVelocities final_velocities(m_maxVelocity, m_maxVelocity);
-    
-    Vector2D<double> position_2D;
-    position_2D.x = position.x;
-    position_2D.y = position.y;
-    
-    auto degs_and_dist = get_degs_and_dist_from_coords(current_position, position_2D);
-    double degs = degs_and_dist[0];
-    double dist = degs_and_dist[1];
-
-    if (get_shortest_dist_between_degs(angle_rotator.m_currentAngle, degs) > angle_rotator.error_margin)
-    {
-        return angle_rotator.rotate_to_angle(degs, "closest");
-    } 
-    else if (dist < error_margin and dist > error_margin * -1){
-        return DifferentialVelocities(0., 0.);
-    }
-    else{
-        return final_velocities;
-    }
-
-}
-
-*/
