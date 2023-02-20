@@ -3,113 +3,61 @@
 #include <iostream>
 #include <array>
 #include <cmath>
-#include <algorithm>
+
 
 namespace simulated_rescue_maze{
 class Angle {
-public:
-    // Supported units
-    enum Unit { RADIANS, DEGREES };
+ public:
+  // Supported units
+  enum Unit { RADIANS, DEGREES };
 
-    // Constructors
-    Angle();
-    Angle(double value, Unit unit = RADIANS);
+  // Constructors
+  Angle();
+  Angle(double value, Unit unit = RADIANS);
 
-    // Setters
-    void setRadians(double value);
-    void setDegrees(double value);
-    // Getters
-    double getRadians();
-    double getDegrees();
+  // Setters
+  void setRadians(double value);
+  void setDegrees(double value);
+  // Getters
+  double getRadians();
+  double getDegrees();
 
-    void normalize();
-    
-    Angle getAbsoluteDistanceTo(Angle t_angle){
-      double distance = std::max(this->getRadians(), t_angle.getRadians()) - 
-                        std::min(this->getRadians(), t_angle.getRadians());
-      return Angle(distance);
-    }
+  void normalize();
 
-    void print();
+  Angle getAbsoluteDistanceTo(Angle t_angle);
+
+  void print();
 
     // Unary operators
-    Angle operator+() const {
-      return Angle(+value);
-    }
-    Angle operator-() const {
-      return Angle(-value);
-    }
+  Angle operator+() const;
+  Angle operator-() const;
 
-    // Binary arithmetic operators
-    Angle operator+(const Angle& other) const {
-      return Angle(value + other.value);
-    }
-    Angle operator-(const Angle& other) const {
-      return Angle(value - other.value);
-    }
+  // Binary arithmetic operators
+  Angle operator+(const Angle& other) const;
+  Angle operator-(const Angle& other) const;
+  Angle operator*(const Angle& other) const;
+  Angle operator/(const Angle& other) const;
+  Angle operator%(const Angle& other) const;
+  Angle operator*(const double& other) const;
 
-    Angle operator*(const Angle& other) const {
-      return Angle(value * other.value);
-    }
-    Angle operator/(const Angle& other) const {
-      return Angle(value / other.value);
-    }
-    Angle operator%(const Angle& other) const {
-      return Angle(std::fmod(value, other.value));
-    }
+  // Compound assignment operators
+  Angle& operator+=(const Angle& other);
+  Angle& operator-=(const Angle& other);
+  Angle& operator*=(const double& other);
+  Angle& operator*=(const Angle& other);
+  Angle& operator/=(const Angle& other);
+  Angle& operator%=(const Angle& other);
 
-    Angle operator*(const double& other) const {
-      return Angle(value * other);
-    }
+  // Comparison operators
+  bool operator==(const Angle& other) const;
+  bool operator!=(const Angle& other) const;
+  bool operator<(const Angle& other) const;
+  bool operator>(const Angle& other) const;
+  bool operator<=(const Angle& other) const;
+  bool operator>=(const Angle& other) const;
 
-    // Compound assignment operators
-    Angle& operator+=(const Angle& other) {
-      value += other.value;
-      return *this;
-    }
-    Angle& operator-=(const Angle& other) {
-      value -= other.value;
-      return *this;
-    }
-    Angle& operator*=(const double& other) {
-      value *= other;
-      return *this;
-    }
-    Angle& operator*=(const Angle& other) {
-      value *= other.value;
-      return *this;
-    }
-    Angle& operator/=(const Angle& other) {
-      value /= other.value;
-      return *this;
-    }
-    Angle& operator%=(const Angle& other) {
-      value = std::fmod(value, other.value);
-      return *this;
-    }
-
-    // Comparison operators
-    bool operator==(const Angle& other) const {
-      return value == other.value;
-    }
-    bool operator!=(const Angle& other) const {
-      return value != other.value;
-    }
-    bool operator<(const Angle& other) const {
-      return value < other.value;
-    }
-    bool operator>(const Angle& other) const {
-      return value > other.value;
-    }
-    bool operator<=(const Angle& other) const {
-      return value <= other.value;
-    }
-    bool operator>=(const Angle& other) const {
-      return value >= other.value;
-    }
-
-private:
-    double value;
+ private:
+  double value;
 };
 
 
@@ -402,6 +350,7 @@ struct Transform3D {
   Vector3D<Angle> angularVelocity;
   Vector3D<Angle> angularAcceleration;
 };
+
 
 class DifferentialVelocities{
  public:

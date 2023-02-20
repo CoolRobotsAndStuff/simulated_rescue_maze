@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "generic_data_structures.hpp"
 #include "utils.hpp"
@@ -35,10 +36,6 @@ double Angle::getDegrees() {
   return value * 180.0 / M_PI;
 }
 
-void Angle::print() {
-  std::cout << this->getDegrees();
-}
-
 // Normalization
 void Angle::normalize() {
   value = fmod(value, 2.0 * M_PI);
@@ -46,6 +43,95 @@ void Angle::normalize() {
     value += 2.0 * M_PI;
   }
 }
+
+Angle Angle::getAbsoluteDistanceTo(Angle t_angle){
+  double distance = std::max(this->getRadians(), t_angle.getRadians()) - 
+                    std::min(this->getRadians(), t_angle.getRadians());
+  return Angle(distance);
+}
+
+void Angle::print() {
+  std::cout << this->getDegrees();
+}
+
+ // Unary operators
+Angle Angle::operator+() const {
+  return Angle(+value);
+}
+Angle Angle::operator-() const {
+  return Angle(-value);
+}
+
+// Binary arithmetic operators
+Angle Angle::operator+(const Angle& other) const {
+  return Angle(value + other.value);
+}
+
+Angle Angle::operator-(const Angle& other) const {
+  return Angle(value - other.value);
+}
+
+Angle Angle::operator*(const Angle& other) const {
+  return Angle(value * other.value);
+}
+Angle Angle::operator/(const Angle& other) const {
+  return Angle(value / other.value);
+}
+Angle Angle::operator%(const Angle& other) const {
+  return Angle(std::fmod(value, other.value));
+}
+
+Angle Angle::operator*(const double& other) const {
+  return Angle(value * other);
+}
+
+// Compound assignment operators
+Angle& Angle::operator+=(const Angle& other) {
+  value += other.value;
+  return *this;
+}
+Angle& Angle::operator-=(const Angle& other) {
+  value -= other.value;
+  return *this;
+}
+Angle& Angle::operator*=(const double& other) {
+  value *= other;
+  return *this;
+}
+Angle& Angle::operator*=(const Angle& other) {
+  value *= other.value;
+  return *this;
+}
+Angle& Angle::operator/=(const Angle& other) {
+  value /= other.value;
+  return *this;
+}
+Angle& Angle::operator%=(const Angle& other) {
+  value = std::fmod(value, other.value);
+  return *this;
+}
+
+// Comparison operators
+bool Angle::operator==(const Angle& other) const {
+  return value == other.value;
+}
+bool Angle::operator!=(const Angle& other) const {
+  return value != other.value;
+}
+bool Angle::operator<(const Angle& other) const {
+  return value < other.value;
+}
+bool Angle::operator>(const Angle& other) const {
+  return value > other.value;
+}
+bool Angle::operator<=(const Angle& other) const {
+  return value <= other.value;
+}
+bool Angle::operator>=(const Angle& other) const {
+  return value >= other.value;
+}
+
+
 
 DifferentialVelocities::DifferentialVelocities(){}
 
@@ -67,15 +153,4 @@ void DifferentialVelocities::set_velocities(float left, float right){
     this->right = right;
 }
 
-/*
-template <class Number>
-void Vector3D<Number>::print(){
-    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-}
-
-
-template<class Number> void Vector2D<Number>::print(){
-    std::cout << "x: " << x << " y: " << y << std::endl;
-}
-*/
 }
