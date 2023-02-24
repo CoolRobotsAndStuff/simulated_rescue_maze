@@ -16,13 +16,4 @@ double changeValueRange(double t_value, double t_min, double t_max, double t_new
 }
 
 
-double get_shortest_dist_between_degs(double ang1, double ang2){
-  double min_ang = std::min(ang1, ang2);
-  double max_ang = std::max(ang1, ang2);
-
-  double dist1 = max_ang - min_ang;
-  double dist2 = (360 + min_ang) - max_ang;
-  return std::min(dist1, dist2);
-}
-
 }

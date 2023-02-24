@@ -45,9 +45,13 @@ void Angle::normalize() {
 }
 
 Angle Angle::getAbsoluteDistanceTo(Angle t_angle){
-  double distance = std::max(this->getRadians(), t_angle.getRadians()) - 
-                    std::min(this->getRadians(), t_angle.getRadians());
-  return Angle(distance);
+  t_angle.normalize();
+  double minAng = std::min(this->getRadians(), t_angle.getRadians());
+  double maxAng = std::max(this->getRadians(), t_angle.getRadians());
+
+  double clockwiseDistance = maxAng - minAng;
+  double counterClockwiseDistance = (360 + minAng) - maxAng;
+  return Angle(std::min(clockwiseDistance, counterClockwiseDistance));
 }
 
 void Angle::print() {
