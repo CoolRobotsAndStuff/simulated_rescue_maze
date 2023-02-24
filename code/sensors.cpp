@@ -62,7 +62,7 @@ void GPS::update(){
   Angle angleToPreviousPosition = position2D.getSlopeToVector(previousPosition2D);
   double distanceToPreviousPosition = position2D.getDistanceToVector(previousPosition2D);
 
-  std::cout << "distance to prev position" << distanceToPreviousPosition << std::endl;
+  //std::cout << "distance to prev position: " << distanceToPreviousPosition << std::endl;
 
   if (fabs(distanceToPreviousPosition) > 0.0001){
     m_isAbleToCalculateOrientation = true;
