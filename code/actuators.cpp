@@ -1,17 +1,19 @@
 #include "actuators.hpp"
+
 #include <webots/Motor.hpp>
 
-using namespace actuators;
 
-Motor::Motor(webots::Motor *motor_device, int time_step){
-    double time_step_s = time_step * 0.001;
-    device = motor_device;
-    device->setPosition(INFINITY);
-    
+namespace simulated_rescue_maze{
 
+void Wheel::initializeValues(){
+  m_device->setPosition(INFINITY);
+};
+
+void Wheel::setVelocity(float t_velocity) {
+  m_device->setVelocity(t_velocity * 6.28);
+  m_velocity = t_velocity;
 }
 
-void Motor::set_velocity(float input_velocity){
-    device->setVelocity(input_velocity * 10);
-    velocity = input_velocity * 10;
+float Wheel::getVelocity() {return m_velocity;}
+
 }

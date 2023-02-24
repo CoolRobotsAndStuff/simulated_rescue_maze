@@ -1,13 +1,15 @@
 #include "sensor_data_loader.hpp"
+#include <iostream>
 
-env_model::Robot SensorDataLoader::load_sensor_data(env_model::Robot input_model, sensors::SensorManager sensors){
-    input_model.position = sensors.gps.position;
-    input_model.velocity = sensors.gps.velocity;
-    input_model.acceleration = sensors.gps.acceleration;
+namespace simulated_rescue_maze{
 
-    input_model.orientation = sensors.gyroscope.orientation.y;
-    input_model.angular_velocity = sensors.gyroscope.angular_velocity.y;
-    input_model.angular_acceleration = sensors.gyroscope.angular_acceleration.y;
+void SensorDataLoader::setSensorManager(SensorManager t_sensorManager){
+  m_sensorManager = t_sensorManager;
+}
 
-    return input_model;
-};
+// Model update
+void SensorDataLoader::updateModel(environment_model::Robot *t_model) {
+  // TODO: Implement the model update based on the sensor data
+}
+
+}

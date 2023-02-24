@@ -1,67 +1,114 @@
 #pragma once
+
+#include <string.h>
+
+#include <cmath>
+
 #include <webots/GPS.hpp>
 #include <webots/Gyro.hpp>
 #include <webots/Robot.hpp>
+
+#include "device.hpp"
 #include "generic_data_structures.hpp"
 
+namespace simulated_rescue_maze{
 
-namespace sensors{
-    class GPS{
-        public:
-            double time_step_s;
+class GPS : public Device<webots::GPS>{
+ public:
+  void update();
+  void initializeValues();
+  void printValues();
+  
 
-            webots::GPS *device;
+  Vector3D<double> getPosition();
+  Vector3D<double> getVelocity();
+  Vector3D<double> getAcceleration();
 
-            DoubleVector3D position;
-            DoubleVector3D previous_position;
-            DoubleVector3D velocity;
-            DoubleVector3D previous_velocity;
-            DoubleVector3D acceleration;
-            
-            // default constructor
-            GPS();
-            // normal constructor
-            GPS(webots::GPS *gps_device, int time_step);
+  Angle getOrientation();
 
-            void init(webots::GPS *gps_device, int time_step);
+  bool isAbleToCalculateOrientation();
 
-            void update();
-            void print_values();
-    };
+  virtual void enableDevice();
+  virtual void disableDevice();
 
-    class Gyroscope{
-        public:
-            double time_step_s;
+  Vector3D<double> m_position;
+  Vector3D<double> m_previousPosition;
+  Vector3D<double> m_velocity;
+  Vector3D<double> m_previousVelocity;
+  Vector3D<double> m_acceleration;
+  Angle m_orientationOffset = Angle(M_PI, Angle::RADIANS);
+  Angle m_orientation;
+  bool m_isAbleToCalculateOrientation;
+};
 
-            webots::Gyro *device;
+class Gyroscope : public Device<webots::Gyro>{
+ public:
+  Vector3D<Angle> getOrientation();
+  Vector3D<Angle> getAngularVelocity();
+  Vector3D<Angle> getAngularAcceleration();
 
-            DoubleVector3D orientation_rads;
-            DoubleVector3D orientation;
-            DoubleVector3D previous_angular_velocity_rads;
-            DoubleVector3D angular_velocity_rads;
-            DoubleVector3D angular_velocity;
-            DoubleVector3D angular_acceleration_rads;
-            DoubleVector3D angular_acceleration;
+  void setOrientation(Vector3D<Angle> t_orientation);
 
-            // default constructor
-            Gyroscope();
-            // normal constructor
-            Gyroscope(webots::Gyro *gyro_device, int time_step);
+  virtual void enableDevice();
+  virtual void disableDevice();
 
-            void init(webots::Gyro *gyro_device, int time_step);
+  void update();
+  void initializeValues();
+  void printValues();
 
-            void update();
-            void print_values(bool convert_to_degs);
-    };
+ private:
+  Vector3D<Angle> m_orientation;
+  Vector3D<Angle> m_previousAngularVelocity;
+  Vector3D<Angle> m_angularVelocity;
+  Vector3D<Angle> m_angularAcceleration;
+};
+
+class PlacementSensor{
+ public:
+  PlacementSensor();
+  void setGpsDevice(webots::GPS *t_gps);
+  void setGyroscopeDevice(webots::Gyro *t_gyroscope);
+
+  GPS getGps();
+  Gyroscope getGyroscope();
+
+  Transform3D<double> getPlacement();
+  void setPlacement(Transform3D<double> t_placement);
+
+  void setTimeStep(int t_timeStepMilliseconds);
+
+  virtual void enable();
+  virtual void disable();
+
+  void initializeValues();
+  void update();
+  
+
+  void printValues();
+
+  bool isGoingStraight();
 
 
-    class SensorManager{
+ private:
+  GPS m_gps;
+  Gyroscope m_gyroscope;
+  Transform3D<double> m_placement;
+};
 
-        public:
-            GPS gps;
-            Gyroscope gyroscope;
-            SensorManager(webots::Robot *robot, int time_step);
-            void update();
-    };
-    
+class SensorManager {
+ public:
+  GPS getGps();
+  Gyroscope getGyroscope();
+  
+  void updateSensors();
+
+  void initializeSensors(webots::Robot *t_robot, int t_timeStepMilliseconds);
+
+ private:
+  GPS m_gps;
+  Gyroscope m_gyroscope;
+
+  
+
+};
 }

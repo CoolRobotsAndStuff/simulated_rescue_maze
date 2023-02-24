@@ -1,25 +1,18 @@
 #include "utils.hpp"
 #include <cmath>
 
+namespace simulated_rescue_maze{
 
-double rads2degs(double rads){
-    return rads * (double(180) / M_PI);
-    }
-
-double degs2rads(double degs){
-    return degs * (double(180) / M_PI);
+double changeValueRange(double t_value, double t_min, double t_max, double t_newMin, double t_newMax){
+  double oldRange = (t_max - t_min);
+  if (oldRange == 0){
+    return t_min;
+  }    
+  else
+  {
+    double newRange = (t_newMax - t_newMin);
+    return (((t_value - t_min) * newRange) / oldRange) + t_newMin;
+  }
 }
 
-double normalize_degs(double degs){
-    degs = fmod(degs, double(360));
-    if (degs < 0)
-        degs += 360;
-    return degs;
-}
-
-double normalize_rads(double rads){
-    rads = fmod(rads, double(2 * M_PI));
-    if (rads < 0)
-        rads += 2 * M_PI;
-    return rads;
 }

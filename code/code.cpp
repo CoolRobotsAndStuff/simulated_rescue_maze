@@ -1,57 +1,73 @@
 #include <iostream>
+
 #include <string.h>
+
 #include <webots/Motor.hpp>
 #include <webots/Robot.hpp>
-#include "sensors.hpp"
+
 #include "actuators.hpp"
+
+#include "generic_data_structures.hpp"
 #include "environment_model.hpp"
 #include "sensor_data_loader.hpp"
+#include "corrector.hpp"
+#include "drive_base.hpp"
 
-using namespace sensors;
-using namespace actuators;
 
 webots::Robot *robot = new webots::Robot();
 
-int const time_step = 32;
+int const timeStepMilliseconds = 32;
+
+
+simulated_rescue_maze::Wheel leftWheel;
+simulated_rescue_maze::Wheel rightWheel;
+
+simulated_rescue_maze::PlacementSensor placementSensor;
+
+simulated_rescue_maze::DriveBase driveBase;
+
+//simulated_rescue_maze::RotationToAngleManager rotationManager;
+//simulated_rescue_maze::MovementToCoordinatesManager movementManager;
 
 int main(){
-    //Inside main:
-    Motor left_wheel(robot->getMotor("wheel1 motor"), time_step);    //Step 1
-    Motor right_wheel(robot->getMotor("wheel2 motor"), time_step);
-    
-    SensorManager my_sensor_manager(robot, time_step);
+  // Movement
+  rightWheel.setDevice(robot->getMotor("wheel1 motor"));
+  rightWheel.initializeValues();
+  leftWheel.setDevice(robot->getMotor("wheel2 motor"));
+  leftWheel.initializeValues();
 
-    env_model::Robot my_robot_model;
-
-    SensorDataLoader my_data_loader;
-
-    while (robot->step(time_step) != -1) {
-        my_sensor_manager.update();
-
-        my_robot_model = my_data_loader.load_sensor_data(my_robot_model, my_sensor_manager);
-
-        std::cout << "Orientation | " << my_robot_model.orientation << std::endl;
-        my_robot_model.position.print();
-
-        right_wheel.set_velocity(0.1);
-        left_wheel.set_velocity(-0.1);
-
-    };
-
-    /*
-    Gyroscope my_gyro(robot->getGyro("gyro"), 32);
-    GPS my_gps(robot->getGPS("gps"), 32);
-
-    while (robot->step(time_step) != -1) {
-        my_gps.update();
-        my_gps.print_values();
-        my_gyro.update();
-        my_gyro.print_values(true);
-        right_wheel.set_velocity(0.1);
-        left_wheel.set_velocity(-0.1);
+  driveBase.setWheels(rightWheel, leftWheel);
 
 
-    };
-    */
-    
-}
+  //Sensors
+  placementSensor.setGpsDevice(robot->getGPS("gps"));
+  placementSensor.setGyroscopeDevice(robot->getGyro("gyro"));
+
+  placementSensor.setTimeStep(timeStepMilliseconds);
+  placementSensor.enable();
+  placementSensor.initializeValues();
+
+  // Main loop
+  while (robot->step(timeStepMilliseconds) != -1) {
+    // Sensor updates
+    placementSensor.update();
+
+    auto robotPlacement = placementSensor.getPlacement();
+
+    // Actuator updates
+    driveBase.setCurrentCoordinates(robotPlacement.position.to2D());
+    driveBase.setCurrentAngle(robotPlacement.orientation.z);
+
+    // Main code
+
+    //simulated_rescue_maze::Angle targetAngle = simulated_rescue_maze::Angle(270, simulated_rescue_maze::Angle::DEGREES);
+    //rotationManager.rotateToAngle(targetAngle, simulated_rescue_maze::RotationToAngleManager::CLOSEST);
+    //std::cout << rotationManager.finishedRotating() << std::endl;
+    driveBase.moveToCoordinates(simulated_rescue_maze::Vector2D<double>(-0.17, -0.3));
+
+    placementSensor.getGps().printValues();
+    //sensorManager.getGyroscope().printValues();
+  }
+
+  return 1;
+  };
