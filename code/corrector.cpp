@@ -100,10 +100,11 @@ void RotationToAngleManager::rotateToAngle(Angle t_angle, Direction t_direction)
   //Angle diff = m_currentAngle - t_angle;
   Angle absoluteDifference = m_currentAngle.getAbsoluteDistanceTo(t_angle);
 
+  /*
   if (absoluteDifference.getDegrees() > 180){
     absoluteDifference = Angle(360, Angle::DEGREES) - absoluteDifference;
   }
-
+  */
   double velocity = changeValueRange(absoluteDifference.getDegrees(), 0, 90, m_minVelocity, m_maxVelocity);
 
   velocity = std::min(velocity, m_maxVelocityCap);
