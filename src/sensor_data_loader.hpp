@@ -1,5 +1,5 @@
 #include "sensors.hpp"
-#include "environment_model.hpp"
+#include "data_structures/environment_model.hpp"
 
 namespace simulated_rescue_maze{
 class SensorDataLoader{

@@ -2,7 +2,7 @@
 #include <algorithm>
 
 #include "generic_data_structures.hpp"
-#include "utils.hpp"
+#include "../utils.hpp"
 
 
 namespace simulated_rescue_maze{

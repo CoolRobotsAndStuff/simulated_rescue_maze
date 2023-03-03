@@ -5,9 +5,9 @@ make
 
 cd ..
 
-FILE=./code
+FILE=./simulated_rescue_maze
 if test -f "$FILE"; then
-    mv ./code ./code.out
+    mv ./simulated_rescue_maze ./simulated_rescue_maze.out
 fi
 
-cp ./code.out "$EREBUS_DIRECTORY/game/controllers/robot0Controller/robot0Controller"
+cp ./simulated_rescue_maze.out "$EREBUS_DIRECTORY/game/controllers/robot0Controller/robot0Controller"

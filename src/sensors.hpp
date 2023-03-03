@@ -9,7 +9,7 @@
 #include <webots/Robot.hpp>
 
 #include "device.hpp"
-#include "generic_data_structures.hpp"
+#include "data_structures/generic_data_structures.hpp"
 
 namespace simulated_rescue_maze{
 

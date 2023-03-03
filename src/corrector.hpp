@@ -3,7 +3,7 @@
 #include <string>
 #include <limits>
 
-#include "generic_data_structures.hpp"
+#include "data_structures/generic_data_structures.hpp"
 
 #include "actuators.hpp"
 

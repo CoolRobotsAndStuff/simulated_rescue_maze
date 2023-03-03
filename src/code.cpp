@@ -7,8 +7,8 @@
 
 #include "actuators.hpp"
 
-#include "generic_data_structures.hpp"
-#include "environment_model.hpp"
+#include "data_structures/generic_data_structures.hpp"
+#include "data_structures/environment_model.hpp"
 #include "sensor_data_loader.hpp"
 #include "corrector.hpp"
 #include "drive_base.hpp"
