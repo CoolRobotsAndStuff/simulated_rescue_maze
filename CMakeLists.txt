@@ -8,8 +8,8 @@ project(${PROJECT})
 find_package( OpenCV REQUIRED )
 
 # Get C or C++ sources in the current directory (only).
-file(GLOB C_SOURCES *.c)
-file(GLOB CPP_SOURCES *.cpp)
+file(GLOB C_SOURCES /src/*.c)
+file(GLOB CPP_SOURCES /src/*.cpp)
 set(SOURCES ${C_SOURCES} ${CPP_SOURCES})
 
 # Set the  Webots home path (change it according to your installation method)
