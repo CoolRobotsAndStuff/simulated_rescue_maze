@@ -1,5 +1,5 @@
 #script to export the EREBUS_DIRECTORY variable
-code/add_erebus_path.sh
+/add_erebus_path.sh
 
 #vscode folder
 .vscode
@@ -8,7 +8,7 @@ code/add_erebus_path.sh
 code/code.out
 
 #CMake files
-code/build/
+/build/
 
 #Ignore compiled files, temporary files and build results
 # Prerequisites
